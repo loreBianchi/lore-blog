@@ -2,13 +2,12 @@
 const Hero = ({ text }) => {
   return (
     <div className="px-4 pb-5 mb-5 text-center">
-      <h1 className="display-5 fw-bold">Heyo, I'm Lorenzo 🧑🏻‍💻</h1>
+      <h1 className="display-5 fw-bold">Hello, I'm Lorenzo 🧑🏻‍💻</h1>
       <div className="col-lg-6 mx-auto">
         <p className="lead mb-6">
-          Quickly design and customize responsive mobile-first sites with
-          Bootstrap, the world’s most popular front-end open source toolkit
-          featuring Sass variables and mixins, responsive grid system, extensive
-          prebuilt components, and powerful JavaScript plugins.
+          I am a software developer and I live near Bergamo (Italy). 
+          I work mainly in the frontend development area, but I also like the backend part. 
+          The programming languages I use and love the most are javascript and python
         </p>
       </div>
     </div>

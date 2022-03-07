@@ -12,7 +12,7 @@ const components = { Nav, Button, SyntaxHighlighter }
 
 const PostPage = ({ frontMatter: { title, date }, mdxSource }) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4 container">
       <h1>{title}</h1>
       <MDXRemote {...mdxSource} components={components}/>
     </div>

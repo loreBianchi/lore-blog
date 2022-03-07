@@ -11,9 +11,9 @@ const Nav = () => {
         <p className="ms-5 pointer lead my-auto">blog</p>
       </Link>
       
-      <Link href="/about" passHref>
+      {/* <Link href="/about" passHref>
         <p className="ms-5 pointer lead my-auto">about</p>
-      </Link>
+      </Link> */}
     </nav>
   )
 }

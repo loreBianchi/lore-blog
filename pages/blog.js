@@ -12,9 +12,9 @@ const Blog = ({ posts }) => {
     <div className="mt-5 container">
       {posts.map((post, index) => (
         <Link href={'/blog/' + post.slug} passHref key={index}>
-          <div className="card mb-3 pointer" style={{ maxWidth: '540px' }}>
-            <div className="row g-0">
-              <div className="col-md-8">
+          <div className="card mb-3 blog-card">
+            <div className="d-inline-flex w-100 justify-content-between">
+              <div>
                 <div className="card-body">
                   <h5 className="card-title">{post.frontMatter.title}</h5>
                   <p className="card-text">{post.frontMatter.description}</p>
@@ -23,13 +23,13 @@ const Blog = ({ posts }) => {
                   </p>
                 </div>
               </div>
-              <div className="col-md-4 m-auto">
+              <div>
                 <Image
                   src={post.frontMatter.thumbnailUrl}
                   className="img-fluid mt-1 rounded-start"
                   alt="thumbnail"
-                  width={500}
-                  height={400}
+                  width={300}
+                  height={218}
                   objectFit="cover"
                 />
               </div>
