@@ -42,3 +42,24 @@ td, th {
   border: 1px solid forestgreen;
   background-color: lightgoldenrodyellow;
 }
+
+.home {
+  background-size: cover;
+  background-image: url("/liquid-cheese.svg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.azure {
+  color: azure;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 2px #222;
+}
+
+.bg-deepskyblue {
+  background-color: deepskyblue;
+}

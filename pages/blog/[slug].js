@@ -4,16 +4,26 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import SyntaxHighlighter from 'react-syntax-highlighter'
+import Image from 'next/image'
 
 import Nav from '../../components/Nav'
 import Button from '../../components/Button'
 
 const components = { Nav, Button, SyntaxHighlighter }
 
-const PostPage = ({ frontMatter: { title, date }, mdxSource }) => {
+const PostPage = ({ frontMatter: { title, postImageUrl }, mdxSource }) => {
   return (
     <div className="mt-4 container">
       <h1>{title}</h1>
+      <div className='w-100 p2 d-flex justify-content-center my-5'>
+        <Image
+          src={postImageUrl}
+          className="img-fluid"
+          alt="thumbnail"
+          width={500}
+          height={300}
+        />
+      </div>
       <MDXRemote {...mdxSource} components={components}/>
     </div>
   )
