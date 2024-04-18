@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   padding: 0;
@@ -6,14 +10,56 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-a {
-  color: deepskyblue;
-  text-decoration: underline;
+.card {
+  @apply bg-white shadow-md rounded-lg;
 }
 
-* {
-  box-sizing: border-box;
+.card-title {
+  @apply text-2xl font-semibold;
 }
+
+.card-body {
+  @apply text-lg;
+}
+
+.card-footer {
+  @apply text-sm text-gray-600;
+}
+
+.container {
+  @apply mx-auto px-4;
+}
+
+/* markdown styles */
+.md-link {
+  @apply text-blue-500 hover:text-blue-700 active:text-blue-900 visited:text-purple-900 underline;
+}
+
+.md-paragraph {
+  @apply text-base mb-2;
+}
+
+.md-h1 {
+  @apply text-3xl font-bold mb-2;
+}
+
+h1 {
+  @apply text-3xl font-bold mb-2;
+}
+
+.md-h2 {
+  @apply text-2xl font-bold mb-2;
+}
+
+.md-h3 {
+  @apply text-xl font-bold mb-2;
+}
+
+.md-list {
+  @apply list-disc list-inside mb-3;
+}
+
+/* --------------------------------- */
 
 .pointer {
   cursor: pointer;
@@ -40,16 +86,7 @@ td, th {
 
 .blog-card:hover {
   border: 1px solid forestgreen;
-  background-color: lightgoldenrodyellow;
-}
-
-.home {
-  background-size: cover;
-  background-image: url("/liquid-cheese.svg");
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background-color: rgb(238, 245, 250);
 }
 
 .azure {
@@ -62,4 +99,13 @@ td, th {
 
 .bg-deepskyblue {
   background-color: deepskyblue;
+}
+
+.bg-rainbow {
+  background-size: cover;
+  background-image: url("/liquid-cheese.svg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;  
 }

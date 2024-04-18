@@ -4,24 +4,31 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import SyntaxHighlighter from 'react-syntax-highlighter'
+import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import Image from 'next/image'
 
-import Nav from '../../components/Nav'
-import Button from '../../components/Button'
-
-const components = { Nav, Button, SyntaxHighlighter }
+const components = { 
+  a: ({ href, children }) => <a className='md-link' href={href + '.mdx'}>{children}</a>, 
+  p: (props) => <p {...props} className='md-paragraph' />,
+  ul: (props) => <ul {...props} className='md-list' />,
+  h1: (props) => <h1 {...props} className='md-h1' />,
+  h2: (props) => <h2 {...props} className='md-h2' />,
+  h3: (props) => <h3 {...props} className='md-h3' />,
+  pre: (props) => <SyntaxHighlighter {...props} style={dracula} className="my-3" />, 
+}
 
 const PostPage = ({ frontMatter: { title, postImageUrl }, mdxSource }) => {
   return (
     <div className="mt-4 container">
       <h1>{title}</h1>
-      <div className='w-100 p2 d-flex justify-content-center my-5'>
+      <div className='w-full p-2 flex justify-center my-5'>
         <Image
           src={postImageUrl}
-          className="img-fluid"
           alt="thumbnail"
+          className="w-auto h-auto"
           width={500}
           height={300}
+          priority
         />
       </div>
       <MDXRemote {...mdxSource} components={components}/>
