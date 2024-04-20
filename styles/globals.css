@@ -10,6 +10,43 @@
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
       Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   }
+
+  h1 {
+    @apply text-3xl font-bold mb-2;
+  }
+
+  h2 {
+    @apply text-2xl font-bold mb-2;
+  }
+
+  h3 {
+    @apply text-xl font-bold mb-2;
+  }
+  
+  h4 {
+    @apply text-lg font-bold mb-2;
+  }
+
+  h5 {
+    @apply text-base font-bold mb-2;
+  }
+
+  h6 {
+    @apply text-sm font-bold mb-2;
+  }
+
+  ul {
+    @apply list-disc list-inside mb-3 text-base;
+  }
+
+  li {
+    @apply text-base mb-2;
+  }
+
+  p {
+    @apply text-base mb-2;
+  }
+  
 }
 
 @layer components {

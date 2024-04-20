@@ -1,24 +1,29 @@
+'use client'
+
 import Link from 'next/link'
 import {useTheme} from 'next-themes'
 import { FaSun, FaMoon } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
+import { usePathname } from 'next/navigation'
 
 const Nav = () => {
   const {theme, setTheme} = useTheme()
+  const pathname = usePathname()
 
+  
   return (
     <nav className="flex w-full flex-row justify-between p-3 text-black bg-deepskyblue dark:bg-gray-900 dark:text-yellow-100">
       <div className='flex flex-row'>
-        <Link href="/" passHref className="nav-link">
+        <Link href="/" passHref className={`${pathname === '/' ? 'dark:text-lime-300 text-cyan-700' : 'nav-link'}`}>
           <FaHome className="h-6 w-6" />
         </Link>
 
-        <Link href="/blog" passHref className="nav-link">
+        <Link href="/blog" passHref className={`${pathname === '/blog' ? 'dark:text-lime-300 text-cyan-700' : 'nav-link'}`}>
           <p className="ms-5 pointer lead my-auto">blog</p>
         </Link>
 
-        <Link href="/porfolio" passHref className="nav-link">
-          <p className="ms-5 pointer lead my-auto">porfolio</p>
+        <Link href="/about" passHref className={`${pathname === '/about' ? 'dark:text-lime-300 text-cyan-700' : 'nav-link'}`}>
+          <p className="ms-5 pointer lead my-auto">about</p>
         </Link>
       </div>
       
