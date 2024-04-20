@@ -3450,10 +3450,11 @@ __metadata:
     gray-matter: ^4.0.3
     next: latest
     next-mdx-remote: ^3.0.8
+    next-themes: ^0.3.0
     postcss: ^8.4.38
     react: latest
     react-dom: latest
-    react-icons: ^4.3.1
+    react-icons: ^5.1.0
     react-syntax-highlighter: ^15.4.5
     tailwindcss: ^3.4.3
   languageName: unknown
@@ -3782,6 +3783,16 @@ __metadata:
     react: ">=16.x <=17.x"
     react-dom: ">=16.x <=17.x"
   checksum: de372708085c7f48ec1c8fb48a9a79cd261235b2d328df0900c9983530d659619f30acc37f5c28eb9813797257ff604449c673b4fba9d17c93af149f436ced6b
+  languageName: node
+  linkType: hard
+
+"next-themes@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "next-themes@npm:0.3.0"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 4285c4969eac517ad7addd773bcb71e7d14bc6c6e3b24eb97b80a6e06ac03fb6cb345e75dfb448156d14430d06289948eb8cfdeb52402ca7ce786093d01d2878
   languageName: node
   linkType: hard
 
@@ -4355,12 +4366,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "react-icons@npm:4.3.1"
+"react-icons@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "react-icons@npm:5.1.0"
   peerDependencies:
     react: "*"
-  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
+  checksum: 0ea6cfed7f2a98d58b3514a080a9d5451ab81fdf94fb0c94d2add0d22b754a38f4eb4cb4e8ce8c0685c0bfca2394ec0101391530a4a90f233256bd7a13f73111
   languageName: node
   linkType: hard
 
