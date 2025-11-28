@@ -1,4 +1,4 @@
-import { baseUrl } from 'app/sitemap'
+const baseUrl = 'https://lorebianchi.com'
 
 export default function robots() {
   return {
