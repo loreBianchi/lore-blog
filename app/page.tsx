@@ -1,19 +1,18 @@
-// Import any necessary components or libraries here, e.g., Link if you were navigating internally.
-
 export default function Page() {
-  // Configuration of external URLs for easy maintenance
   const blogURL = "https://blog.lorebianchi.com/";
 
   return (
     <section>
-      {/* 1. INTRODUCTION SECTION (HERO) */}
-      <h1 className="mb-8 text-4xl font-bold tracking-tighter">Hello, I'm Lorenzo 👋</h1>
+      <h1 className="mb-8 text-4xl font-bold tracking-tighter text-green-400 dark:text-yellow-500">
+        Hello, I'm Lorenzo 👋
+      </h1>
 
-      <p className="mb-4">
+      <p className="mb-4 text-gray-700 dark:text-gray-300">
         {`My name is Lorenzo Bianchi. I'm a Web developer based in Italy. I love building
         beautiful and performant web applications using modern technologies.`}
       </p>
-      <p className="mb-4">
+      
+      <p className="mb-8 text-gray-700 dark:text-gray-300">
         {`I write code primarily using Javascript, Typescript and Python, and I'm always eager to learn and explore new technologies.`}
       </p>
       {/* 2. BLOG LINK (FOCAL CALL TO ACTION) */}
