@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Sun, Moon, Palette, Sparkles } from "lucide-react";
+import { Sun, Moon, Palette, Sparkles, Droplet } from "lucide-react";
 
 export const ThemeToggle = () => {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -11,8 +11,9 @@ export const ThemeToggle = () => {
   const themes = [
     { id: "light", icon: Sun, color: "text-yellow-600" },
     { id: "dark", icon: Moon, color: "text-blue-500" },
-    { id: "pastel", icon: Palette, color: "text-pink-500" },
-    { id: "custom", icon: Sparkles, color: "text-purple-500" },
+    { id: "pastel", icon: Palette, color: "text-cyan-500" },
+    { id: "cyber", icon: Sparkles, color: "text-purple-500" },
+    { id: "water", icon: Droplet, color: "text-blue-500" },
   ];
 
   useEffect(() => {

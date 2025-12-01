@@ -6,8 +6,9 @@
   --color-card: hsl(207 97% 12%);
   --color-background-light: hsl(0 0% 100%);
   --color-background-dark: hsl(207 95% 8%);
-  --color-background-custom: hsl(187 71% 82%);
-  --color-background-pastel: hsl(279 100% 93%);
+  --color-background-cyber: hsl(79 100% 60%);
+  --color-background-pastel: hsl(57 100% 86%);
+  --color-background-water: hsl(179 100% 60%);
 }
 
 @layer base {
@@ -17,11 +18,14 @@
   [data-theme="dark"] {
     --color-card: hsl(0 0% 96%);
   }
-  [data-theme="custom"] {
+  [data-theme="cyber"] {
     --color-card: hsl(182, 87%, 39%);
   }
   [data-theme="pastel"] {
     --color-card: hsl(291 46% 83%);
+  }
+  [data-theme="water"] {
+    --color-card: hsl(197, 100%, 40%);
   }
 }
 
@@ -33,10 +37,14 @@
   background-color: var(--color-background-dark);
 }
 
-:root[data-theme="custom"] {
-  background-color: var(--color-background-custom);
+:root[data-theme="cyber"] {
+  background-color: var(--color-background-cyber);
 }
 
 :root[data-theme="pastel"] {
   background-color: var(--color-background-pastel);
+}
+
+:root[data-theme="water"] {
+  background-color: var(--color-background-water);
 }

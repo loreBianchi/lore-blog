@@ -3,7 +3,7 @@ export default function Page() {
 
   return (
     <section>
-      <h1 className="mb-8 text-4xl font-bold tracking-tighter text-green-400 dark:text-yellow-500">
+      <h1 className="mb-8 text-4xl font-bold tracking-tighter">
         Hello, I'm Lorenzo 👋
       </h1>
 
@@ -15,10 +15,9 @@ export default function Page() {
       <p className="mb-8 text-gray-700 dark:text-gray-300">
         {`I write code primarily using Javascript, Typescript and Python, and I'm always eager to learn and explore new technologies.`}
       </p>
-      {/* 2. BLOG LINK (FOCAL CALL TO ACTION) */}
       <div className="my-12">
         <a
-          href={blogURL} // External blog URL
+          href={blogURL}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 dark:text-blue-400 font-medium underline hover:no-underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
