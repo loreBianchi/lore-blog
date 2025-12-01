@@ -1,11 +1,10 @@
 import { GithubIcon } from 'lucide-react'
 
 export default function Footer() {
-  // Get the current year for the copyright notice
   const currentYear = new Date().getFullYear(); 
   
   return (
-    <footer className="mt-16 mb-8 w-full p-8"> {/* Adjusted margins and ensured full width */}      
+    <footer className="mt-16 mb-8 w-full p-8">    
       <div className="flex justify-between items-center w-full"> 
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
           © {currentYear} Lorenzo Bianchi
