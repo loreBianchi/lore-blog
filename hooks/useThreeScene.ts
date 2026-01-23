@@ -1,131 +1,201 @@
-'use client'
+import React, { useEffect, useState, useRef, ReactNode } from 'react';
+import * as THREE from 'three';
 
-import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// ============================================================================
+// CORE THREE.JS HOOK
+// ============================================================================
 
 interface UseThreeSceneOptions {
-  containerRef: React.RefObject<HTMLDivElement>
-  onSceneCreated?: (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer) => void
-  backgroundColor?: number
-  enableShadows?: boolean
+  cameraPosition?: [number, number, number];
+  background?: number;
+  fog?: { color: number; near: number; far: number };
+  enableOrbitControls?: boolean;
+  orbitControlsConfig?: {
+    enableDamping?: boolean;
+    dampingFactor?: number;
+    minDistance?: number;
+    maxDistance?: number;
+  };
 }
 
-export function useThreeScene({
-  containerRef,
-  onSceneCreated,
-  backgroundColor = 0x000000,
-  enableShadows = false
-}) {
-  const sceneRef = useRef<THREE.Scene | null>(null)
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
-  const controlsRef = useRef<OrbitControls | null>(null)
-  const animationIdRef = useRef<number | null>(null)
+export function useThreeScene(
+  containerRef: React.RefObject<HTMLDivElement>,
+  options: UseThreeSceneOptions = {}
+) {
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const controlsRef = useRef<any>(null);
+  const animationIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return
+    if (!containerRef.current) return;
 
-    // Initialize scene
-    const scene = new THREE.Scene()
-    scene.background = new THREE.Color(backgroundColor)
-    sceneRef.current = scene
+    // Scene setup
+    const scene = new THREE.Scene();
+    if (options.background !== undefined) {
+      scene.background = new THREE.Color(options.background);
+    }
+    if (options.fog) {
+      scene.fog = new THREE.Fog(options.fog.color, options.fog.near, options.fog.far);
+    }
+    sceneRef.current = scene;
 
+    // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
       containerRef.current.clientWidth / containerRef.current.clientHeight,
       0.1,
       1000
-    )
-    cameraRef.current = camera
+    );
+    const [x, y, z] = options.cameraPosition || [0, 0, 50];
+    camera.position.set(x, y, z);
+    cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ 
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({
       antialias: true,
-      alpha: backgroundColor === 0x000000
-    })
-    renderer.setSize(
-      containerRef.current.clientWidth, 
-      containerRef.current.clientHeight
-    )
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    
-    if (enableShadows) {
-      renderer.shadowMap.enabled = true
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap
+      alpha: true,
+    });
+    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    rendererRef.current = renderer;
+
+    containerRef.current.innerHTML = '';
+    containerRef.current.appendChild(renderer.domElement);
+
+    // OrbitControls setup - manual implementation
+    if (options.enableOrbitControls !== false) {
+      const config = options.orbitControlsConfig || {};
+      let isDragging = false;
+      let previousMousePosition = { x: 0, y: 0 };
+      const rotationSpeed = 0.005;
+      const zoomSpeed = 0.1;
+
+      const handleMouseDown = (e: MouseEvent) => {
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging || !cameraRef.current) return;
+
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+
+        const spherical = {
+          radius: Math.sqrt(
+            camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
+          ),
+          theta: Math.atan2(camera.position.x, camera.position.z),
+          phi: Math.acos(camera.position.y / Math.sqrt(
+            camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
+          )),
+        };
+
+        spherical.theta -= deltaX * rotationSpeed;
+        spherical.phi -= deltaY * rotationSpeed;
+        spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+
+        camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+        camera.position.y = spherical.radius * Math.cos(spherical.phi);
+        camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+        camera.lookAt(0, 0, 0);
+
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      };
+
+      const handleMouseUp = () => {
+        isDragging = false;
+      };
+
+      const handleWheel = (e: WheelEvent) => {
+        e.preventDefault();
+        if (!cameraRef.current) return;
+
+        const delta = e.deltaY * zoomSpeed;
+        const currentDistance = Math.sqrt(
+          camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
+        );
+        const newDistance = Math.max(
+          config.minDistance || 5,
+          Math.min(config.maxDistance || 100, currentDistance + delta)
+        );
+        const scale = newDistance / currentDistance;
+
+        camera.position.multiplyScalar(scale);
+      };
+
+      renderer.domElement.addEventListener('mousedown', handleMouseDown);
+      renderer.domElement.addEventListener('mousemove', handleMouseMove);
+      renderer.domElement.addEventListener('mouseup', handleMouseUp);
+      renderer.domElement.addEventListener('wheel', handleWheel, { passive: false });
+
+      controlsRef.current = {
+        cleanup: () => {
+          renderer.domElement.removeEventListener('mousedown', handleMouseDown);
+          renderer.domElement.removeEventListener('mousemove', handleMouseMove);
+          renderer.domElement.removeEventListener('mouseup', handleMouseUp);
+          renderer.domElement.removeEventListener('wheel', handleWheel);
+        },
+      };
     }
-    
-    rendererRef.current = renderer
 
-    // Clear container and add renderer
-    containerRef.current.innerHTML = ''
-    containerRef.current.appendChild(renderer.domElement)
-
-    // Initialize controls
-    const controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true
-    controls.dampingFactor = 0.05
-    controlsRef.current = controls
-
-    // Callback for scene setup
-    if (onSceneCreated) {
-      onSceneCreated(scene, camera, renderer)
-    }
-
-    // Animation loop
-    const animate = () => {
-      controls.update()
-      renderer.render(scene, camera)
-      animationIdRef.current = requestAnimationFrame(animate)
-    }
-    
-    animate()
-
-    // Handle resize
+    // Resize handler
     const handleResize = () => {
-      if (!containerRef.current || !camera || !renderer) return
-      
-      camera.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(
-        containerRef.current.clientWidth, 
-        containerRef.current.clientHeight
-      )
-    }
-    
-    window.addEventListener('resize', handleResize)
+      if (!containerRef.current || !cameraRef.current || !rendererRef.current) return;
+      cameraRef.current.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    };
 
-    // Cleanup
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleResize);
       if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current)
+        cancelAnimationFrame(animationIdRef.current);
       }
-      
-      // Dispose resources
-      scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry.dispose()
-          if (Array.isArray(object.material)) {
-            object.material.forEach(material => material.dispose())
-          } else {
-            object.material.dispose()
-          }
-        }
-      })
-      
-      renderer.dispose()
-      controls.dispose()
-      
+      if (controlsRef.current?.cleanup) {
+        controlsRef.current.cleanup();
+      }
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+      }
       if (containerRef.current) {
-        containerRef.current.innerHTML = ''
+        containerRef.current.innerHTML = '';
       }
+    };
+  }, []);
+
+  const startAnimation = (callback: () => void) => {
+    const animate = () => {
+      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
+      
+      callback();
+      
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+      animationIdRef.current = requestAnimationFrame(animate);
+    };
+    
+    animationIdRef.current = requestAnimationFrame(animate);
+  };
+
+  const stopAnimation = () => {
+    if (animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = null;
     }
-  }, [containerRef, backgroundColor, enableShadows])
+  };
 
   return {
     scene: sceneRef.current,
     camera: cameraRef.current,
     renderer: rendererRef.current,
-    controls: controlsRef.current
-  }
+    controls: controlsRef.current,
+    startAnimation,
+    stopAnimation,
+  };
 }

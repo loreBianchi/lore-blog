@@ -16,3 +16,10 @@ export interface Experiment {
   createdAt: string
   updatedAt: string
 }
+
+export interface StatItem {
+  label: string
+  value: string | number
+  color: string
+  inline?: boolean
+}

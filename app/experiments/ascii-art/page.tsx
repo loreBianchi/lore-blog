@@ -1,10 +1,10 @@
-import { NeonGridExperiment } from '@/components/experiments/neon-grid'
+import ASCIIArtExperiment from '@/components/experiments/ascii';
 import { ExperimentNotFound } from '@/components/experiments/shared/experiment-not-found';
 import { ExperimentPageLayout } from '@/components/experiments/shared/experiment-page-layout';
 import { experiments } from "@/data/experiments";
 
 export default function NeonGridPage() {
-  const experiment = experiments.find((exp) => exp.slug === "neon-grid");
+  const experiment = experiments.find((exp) => exp.slug === "ascii-art");
 
   if (!experiment) {
     return <ExperimentNotFound />;
@@ -15,7 +15,7 @@ export default function NeonGridPage() {
       title={experiment.title} 
       description={experiment.description}
     >
-      <NeonGridExperiment />
+      <ASCIIArtExperiment />
     </ExperimentPageLayout>
   );
 }

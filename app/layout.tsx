@@ -44,9 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className={cx("antialiased min-h-screen flex flex-col", GeistSans.variable, GeistMono.variable)}>
         <ThemeProvider enableSystem={true} defaultTheme="system">
-          <div className="max-w-xl mx-4 mt-8 lg:mx-auto w-full flex flex-col flex-1">
+          <div className="mx-4 mt-8 lg:mx-auto w-full flex flex-col flex-1">
             <Navbar />
-            <main className="flex flex-1 min-w-0 mt-6 flex-col px-2 md:px-0">
+            <main className="pt-8">
               {children}
             </main>
           </div>

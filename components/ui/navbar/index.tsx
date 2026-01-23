@@ -15,7 +15,7 @@ export const navItems: Record<string, NavItem> = {
   "/experiments": {
     name: "experiments",
     icon: "🔬",
-    badge: "3D",
+    badge: "New",
   },
 };
 
@@ -34,7 +34,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full transition-all duration-300 max-w-xl mx-auto ${
         scrolled
           ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-neutral-200 dark:border-neutral-800"
           : "bg-transparent"
@@ -46,7 +46,7 @@ export function Navbar() {
 
           {/* Right Side - Theme Toggle */}
           <div className="flex items-center gap-4">
-            <div className="hidden md:block">
+            <div className="hidden md:block mr-4">
               <ThemeToggle />
             </div>
 

@@ -2,7 +2,7 @@ export default function Page() {
   const blogURL = "https://blog.lorebianchi.com/";
 
   return (
-    <section>
+    <section className="max-w-xl mx-auto">
       <h1 className="mb-8 text-4xl font-bold tracking-tighter">
         Hello, I'm Lorenzo 👋
       </h1>
