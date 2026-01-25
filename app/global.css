@@ -9,24 +9,64 @@
   --color-background-cyber: hsl(79 100% 60%);
   --color-background-pastel: hsl(57 100% 86%);
   --color-background-water: hsl(179 100% 60%);
+  --color-primary-text: hsl(0 0% 0%);
+  --color-secondary-text: hsl(0 0% 40%);
+  --color-navbar-text: hsl(0 0% 100%);
+  --color-navbar-text-active: hsl(120 100% 40%);
 }
 
 @layer base {
   [data-theme="light"] {
     --color-card: hsl(207 97% 12%);
+    --color-primary-text: hsl(0 0% 0%);
+    --color-secondary-text: hsl(0 0% 40%);
+    --color-navbar-text: hsl(0 0% 0%);
+    --color-navbar-text-active: hsl(120 100% 40%);
   }
   [data-theme="dark"] {
     --color-card: hsl(0 0% 96%);
+    --color-primary-text: hsl(0 0% 100%);
+    --color-secondary-text: hsl(0 0% 60%);
+    --color-navbar-text: hsl(0 0% 100%);
+    --color-navbar-text-active: hsl(120 100% 60%);
   }
   [data-theme="cyber"] {
     --color-card: hsl(182, 87%, 39%);
+    --color-primary-text: hsl(0 0% 0%);
+    --color-secondary-text: hsl(0 0% 20%);
+    --color-navbar-text: hsl(0 0% 0%);
+    --color-navbar-text-active: hsl(120 100% 40%);
   }
   [data-theme="pastel"] {
     --color-card: hsl(291 46% 83%);
+    --color-primary-text: hsl(0 0% 0%);
+    --color-secondary-text: hsl(0 0% 20%);
+    --color-navbar-text: hsl(283, 77%, 52%);
+    --color-navbar-text-active: hsl(314, 77%, 52%);
   }
   [data-theme="water"] {
     --color-card: hsl(197, 100%, 40%);
+    --color-primary-text: hsl(0 0% 0%);
+    --color-secondary-text: hsl(0 0% 20%);
+    --color-navbar-text: hsl(216, 100%, 35%);
+    --color-navbar-text-active: hsl(216, 100%, 50%);
   }
+}
+
+@utility text-primary {
+  color: var(--color-primary-text);
+}
+@utility text-secondary {
+  color: var(--color-secondary-text);
+}
+@utility text-navbar {
+  color: var(--color-navbar-text);
+}
+@utility text-navbar-active {
+  color: var(--color-navbar-text-active);
+}
+.border-navbar {
+  border-color: var(--color-navbar-text);
 }
 
 :root[data-theme="light"] {

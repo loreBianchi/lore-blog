@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Navbar } from "../components/ui/navbar";
-import Footer from "../components/footer";
+import Footer from "../components/ui/footer";
 import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
@@ -38,19 +38,20 @@ const cx = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-    >
-      <body className={cx("antialiased min-h-screen flex flex-col", GeistSans.variable, GeistMono.variable)}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cx(
+          "antialiased min-h-screen flex flex-col",
+          GeistSans.variable,
+          GeistMono.variable,
+        )}
+      >
         <ThemeProvider enableSystem={true} defaultTheme="system">
-          <div className="mx-4 mt-8 lg:mx-auto w-full flex flex-col flex-1">
+          <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="pt-8">
-              {children}
-            </main>
+            <main className="flex-1 px-4 py-8">{children}</main>
+            <Footer />
           </div>
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

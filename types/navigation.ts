@@ -1,6 +1,6 @@
 export type NavItem = {
+  path: string;
   name: string;
-  icon: string;
+  isExternal: boolean;
   badge?: string;
 };
-

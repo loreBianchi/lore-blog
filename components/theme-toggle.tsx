@@ -4,7 +4,11 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Sun, Moon, Palette, Sparkles, Droplet } from "lucide-react";
 
-export const ThemeToggle = () => {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+export const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -33,7 +37,7 @@ export const ThemeToggle = () => {
 
   if (!mounted) {
     return (
-      <button className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+      <button className={`px-3 py-1 border border-navbar hover:bg-green-400/10 transition-colors text-navbar hover:text-navbar-active text-sm ${className || ""}`} aria-label="Loading theme">
         <Sun className="w-4 h-4 text-gray-400" />
       </button>
     );
@@ -42,8 +46,8 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={handleClick}
-      className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-      aria-label={`Switch to ${nextTheme.id} theme`}
+      className={`px-3 py-1 border border-navbar hover:bg-green-400/10 transition-colors text-navbar hover:text-navbar-active text-sm ${className || ""}`}
+      aria-label={`Switch theme (current: ${currentTheme})`}
     >
       <Icon className={`w-4 h-4 ${themes[currentIndex]?.color || 'text-gray-700'}`} />
     </button>
