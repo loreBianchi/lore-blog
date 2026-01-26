@@ -3,7 +3,7 @@ import { experiments } from '@/data/experiments'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Experiments | Dev Portfolio',
+  title: 'Experiments',
   description: 'A collection of fun experiments built with Three.js, WebGL, and other technologies.',
 }
 

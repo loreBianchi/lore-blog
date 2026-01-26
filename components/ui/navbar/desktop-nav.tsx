@@ -38,12 +38,12 @@ export function DesktopNav({ items = [] }: DesktopNavProps) {
             key={item.path}
             href={item.path}
             className={`
-                  relative group hover:text-navbar-active transition-colors cursor-pointer
-                  ${isActive ? "text-navbar-text-active" : "text-navbar-text"}
+                  relative group hover:text-active transition-colors cursor-pointer
+                  ${isActive ? "text-active" : "text-navbar-text"}
                 `}
           >
             <span className="flex items-center gap-2">
-              {isActive && <span className="text-navbar-text-active">{">"}</span>}
+              {isActive && <span className="text-active">{">"}</span>}
               {item.name}
               {item.badge && (
                 <span className="text-xs px-1.5 py-0.5 border border-navbar text-navbar-text">

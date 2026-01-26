@@ -1,4 +1,5 @@
 import { Experiment } from "@/types/experiment";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface ExperimentListItemProps {
@@ -19,7 +20,7 @@ export function ExperimentListItem({ item }: ExperimentListItemProps) {
           </h2>
           <p className="text-sm text-primary/50 mt-1">{item.description}</p>
         </div>
-        <span className="text-primary/30 group-hover:text-primary/70 transition-colors">→</span>
+        <ArrowRight size={16} className="text-primary/30 group-hover:text-primary/70 transition-colors" />
       </div>
     </Link>
   );

@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 
 const navItems: NavItem[] = [
   { path: "/", name: "home", isExternal: false },
-  { path: "/experiments", name: "experiments", badge: "new", isExternal: false },
+  { path: "/experiments", name: "experiments", isExternal: false },
   { path: "https://blog.lorebianchi.com", name: "blog", isExternal: true },
   { path: "/contact", name: "contact", isExternal: false },
 ];

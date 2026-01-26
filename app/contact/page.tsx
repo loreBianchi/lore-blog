@@ -2,7 +2,7 @@ import Link from "next/link";
 import Map from "./map"
 
 export const metadata = {
-  title: "Contact | Dev Portfolio",
+  title: "Contact",
   description: "Get in touch with me for projects, collaborations, or just to say hi.",
 };
 
