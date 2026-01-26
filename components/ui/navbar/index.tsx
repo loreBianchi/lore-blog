@@ -5,7 +5,7 @@ import { DesktopNav } from "./desktop-nav";
 import { NavItem } from "@/types/navigation";
 import { MobileNav } from "./mobile-nav";
 import { MobileMenuBtn } from "./mobile-menu-btn";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";

@@ -1,6 +1,10 @@
-"use client";
-
 import Link from "next/link";
+import Map from "./map"
+
+export const metadata = {
+  title: "Contact | Dev Portfolio",
+  description: "Get in touch with me for projects, collaborations, or just to say hi.",
+};
 
 export default function ContactPage() {
   return (
@@ -61,15 +65,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Map */}
-          <div className="overflow-hidden rounded-2xl border border-green-400/20 shadow-lg">
-            <iframe
-              title="OpenStreetMap"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=9.05%2C45.35%2C9.35%2C45.55&layer=mapnik"
-              className="h-80 w-full"
-              loading="lazy"
-            />
-          </div>
+          <Map />
+
         </section>
       </div>
     </main>
