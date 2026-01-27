@@ -13,11 +13,11 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const themes = [
-    { id: "light", icon: Sun, color: "text-yellow-600" },
-    { id: "dark", icon: Moon, color: "text-blue-500" },
-    { id: "pastel", icon: Palette, color: "text-cyan-500" },
-    { id: "cyber", icon: Sparkles, color: "text-purple-500" },
-    { id: "water", icon: Droplet, color: "text-blue-500" },
+    { id: "light", icon: Sun },
+    { id: "dark", icon: Moon},
+    { id: "pastel", icon: Palette },
+    { id: "cyber", icon: Sparkles },
+    { id: "water", icon: Droplet },
   ];
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
       className={`px-3 py-1 border border-navbar hover:bg-green-400/10 transition-colors text-navbar hover:text-navbar-active text-sm ${className || ""}`}
       aria-label={`Switch theme (current: ${currentTheme})`}
     >
-      <Icon className={`w-4 h-4 ${themes[currentIndex]?.color || 'text-gray-700'}`} />
+      <Icon className={`w-4 h-4 text-navbar`} />
     </button>
   );
 };

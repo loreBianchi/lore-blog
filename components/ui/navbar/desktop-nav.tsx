@@ -39,7 +39,7 @@ export function DesktopNav({ items = [] }: DesktopNavProps) {
             href={item.path}
             className={`
                   relative group hover:text-active transition-colors cursor-pointer
-                  ${isActive ? "text-active" : "text-navbar-text"}
+                  ${isActive ? "text-active font-semibold" : "text-navbar-text"}
                 `}
           >
             <span className="flex items-center gap-2">

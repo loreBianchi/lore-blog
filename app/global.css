@@ -10,46 +10,46 @@
   --color-background-pastel: hsl(57 100% 86%);
   --color-background-water: hsl(179 100% 60%);
   --color-primary: hsl(0 0% 0%);
-  --color-secondary-text: hsl(0 0% 40%);
+  --color-secondary: hsl(0 0% 40%);
   --color-navbar-text: hsl(0 0% 100%);
-  --color-text-active: hsl(120 100% 40%);
+  --color-active: hsl(120 100% 40%);
 }
 
 @layer base {
   [data-theme="light"] {
     --color-card: hsl(207 97% 12%);
     --color-primary: hsl(0 0% 0%);
-    --color-secondary-text: hsl(0 0% 40%);
-    --color-navbar-text: hsl(0 0% 0%);
-    --color-text-active: hsl(120 100% 40%);
+    --color-secondary: hsl(0 0% 40%);
+    --color-navbar-text: hsl(220 15% 20%);
+    --color-active: hsl(220 90% 50%);
   }
   [data-theme="dark"] {
     --color-card: hsl(0 0% 96%);
     --color-primary: hsl(0 0% 100%);
-    --color-secondary-text: hsl(0 0% 60%);
-    --color-navbar-text: hsl(0 0% 100%);
-    --color-text-active: hsl(120 100% 60%);
+    --color-secondary: hsl(0 0% 60%);
+    --color-navbar-text: hsl(0 0% 96%);
+    --color-active: hsl(160 90% 55%);
   }
   [data-theme="cyber"] {
     --color-card: hsl(182, 87%, 39%);
     --color-primary: hsl(0 0% 0%);
-    --color-secondary-text: hsl(0 0% 20%);
-    --color-navbar-text: hsl(0 0% 0%);
-    --color-text-active: hsl(120 100% 40%);
+    --color-secondary: hsl(0 0% 20%);
+    --color-navbar-text: hsl(220 30% 10%);
+    --color-active: hsl(195 100% 45%);
   }
   [data-theme="pastel"] {
     --color-card: hsl(291 46% 83%);
     --color-primary: hsl(0 0% 0%);
-    --color-secondary-text: hsl(0 0% 20%);
-    --color-navbar-text: hsl(283, 77%, 52%);
-    --color-text-active: hsl(314, 77%, 52%);
+    --color-secondary: hsl(0 0% 20%);
+    --color-navbar-text: hsl(280 40% 30%);
+    --color-active: hsl(320 70% 45%);
   }
   [data-theme="water"] {
     --color-card: hsl(197, 100%, 40%);
     --color-primary: hsl(0 0% 0%);
-    --color-secondary-text: hsl(0 0% 20%);
-    --color-navbar-text: hsl(216, 100%, 35%);
-    --color-text-active: hsl(216, 100%, 50%);
+    --color-secondary: hsl(0 0% 20%);
+    --color-navbar-text: hsl(215 80% 25%);
+    --color-active: hsl(200 100% 45%);
   }
 }
 
@@ -57,13 +57,13 @@
   color: var(--color-primary);
 }
 @utility text-secondary {
-  color: var(--color-secondary-text);
+  color: var(--color-secondary);
 }
 @utility text-navbar {
   color: var(--color-navbar-text);
 }
 @utility text-active {
-  color: var(--color-text-active);
+  color: var(--color-active);
 }
 @utility bg-primary {
   background-color: var(--color-primary);
