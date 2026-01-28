@@ -1,10 +1,10 @@
-import ASCIIArtExperiment from '@/components/experiments/ascii';
+import AudioVisualizerExperiment from '@/components/experiments/audio-visualizer';
 import { ExperimentNotFound } from '@/components/experiments/shared/experiment-not-found';
 import { ExperimentPageLayout } from '@/components/experiments/shared/experiment-page-layout';
 import { experiments } from "@/data/experiments";
 
-export default function AsciiArtPage() {
-  const experiment = experiments.find((exp) => exp.slug === "ascii-art");
+export default function AudioVisualizerPage() {
+  const experiment = experiments.find((exp) => exp.slug === "audio-visualizer");
 
   if (!experiment) {
     return <ExperimentNotFound />;
@@ -16,7 +16,7 @@ export default function AsciiArtPage() {
       description={experiment.description}
       tags={experiment.tech}
     >
-      <ASCIIArtExperiment />
+      <AudioVisualizerExperiment />
     </ExperimentPageLayout>
   );
 }

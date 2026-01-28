@@ -71,6 +71,12 @@
 .border-navbar {
   border-color: var(--color-navbar-text);
 }
+.border-active {
+  border-color: var(--color-active);
+}
+.hello-bg {
+  background-image: url("/images/hello-bg-dark.png");
+}
 
 :root[data-theme="light"] {
   background-color: var(--color-background-light);
@@ -78,6 +84,9 @@
 
 :root[data-theme="dark"] {
   background-color: var(--color-background-dark);
+  .hello-bg {
+    background-image: url("/images/hello-bg-light.png");
+  }
 }
 
 :root[data-theme="cyber"] {

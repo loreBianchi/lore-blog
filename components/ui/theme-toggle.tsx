@@ -14,7 +14,7 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
 
   const themes = [
     { id: "light", icon: Sun },
-    { id: "dark", icon: Moon},
+    { id: "dark", icon: Moon },
     { id: "pastel", icon: Palette },
     { id: "cyber", icon: Sparkles },
     { id: "water", icon: Droplet },
@@ -24,8 +24,8 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
     setMounted(true);
   }, []);
 
-  const currentTheme = mounted ? (resolvedTheme || theme || "light") : "light";
-  const currentIndex = themes.findIndex(t => t.id === currentTheme);
+  const currentTheme = mounted ? resolvedTheme || theme || "light" : "light";
+  const currentIndex = themes.findIndex((t) => t.id === currentTheme);
   const nextIndex = (currentIndex + 1) % themes.length;
   const nextTheme = themes[nextIndex];
   const Icon = themes[currentIndex]?.icon || Sun;
@@ -35,21 +35,13 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
     setTheme(nextTheme.id);
   };
 
-  if (!mounted) {
-    return (
-      <button className={`px-3 py-1 border border-navbar hover:bg-green-400/10 transition-colors text-navbar hover:text-navbar-active text-sm ${className || ""}`} aria-label="Loading theme">
-        <Sun className="w-4 h-4 text-gray-400" />
-      </button>
-    );
-  }
-
   return (
     <button
       onClick={handleClick}
-      className={`px-3 py-1 border border-navbar hover:bg-green-400/10 transition-colors text-navbar hover:text-navbar-active text-sm ${className || ""}`}
-      aria-label={`Switch theme (current: ${currentTheme})`}
+      className={`px-3 py-1 border border-navbar hover:bg-active/10 transition-colors text-navbar hover:text-active hover:border-active text-sm ${className || ""}`}
+      aria-label={mounted ? `Switch theme (current: ${currentTheme})` : "Loading theme"}
     >
-      <Icon className={`w-4 h-4 text-navbar`} />
+      {mounted ?<Icon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
     </button>
   );
 };

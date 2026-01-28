@@ -11,7 +11,11 @@ const ParticleGalaxyPage = () => {
   }
 
   return (
-    <ExperimentPageLayout title={experiment.title} description={experiment.description}>
+    <ExperimentPageLayout
+      title={experiment.title}
+      description={experiment.description}
+      tags={experiment.tech}
+    >
       <ParticleGalaxyExperiment />
     </ExperimentPageLayout>
   );

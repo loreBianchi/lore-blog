@@ -14,6 +14,7 @@ export default function NeonGridPage() {
     <ExperimentPageLayout 
       title={experiment.title} 
       description={experiment.description}
+      tags={experiment.tech}
     >
       <NeonGridExperiment />
     </ExperimentPageLayout>

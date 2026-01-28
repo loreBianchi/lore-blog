@@ -287,7 +287,7 @@ export default function ASCIIArtExperiment() {
 
   return (
     <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-2xl">
-      <div className="w-full h-full bg-gradient-to-br from-gray-900 via-black to-green-900/20">
+      <div className="w-full h-full bg-linear-to-br from-gray-900 via-black to-green-900/20">
         <div ref={containerRef} className="w-full h-full" />
 
         {/* Toggle Controls Button */}

@@ -26,41 +26,53 @@ export default function ContactPage() {
             <h3 className="text-xl font-bold text-primary">Contacts</h3>
             <div className="space-y-3 text-primary/80">
               <p>
-                <span className="text-primary/50">Email:</span>{" "}
+                <span className="text-active/50 font-bold">Email:</span>{" "}
                 <a
                   href="mailto:lorebianchi123@gmail.com"
-                  className="hover:text-navbar-active transition-colors hover:underline"
+                  className="hover:text-navbar-active transition-colors hover:underline text-primary"
                 >
                   lorebianchi123@gmail.com
                 </a>
               </p>
 
               <p>
-                <span className="text-primary/50">Github:</span>{" "}
+                <span className="text-active/50 font-bold">Github:</span>{" "}
                 <Link
                   href="https://github.com/lorebianchi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-navbar-active transition-colors hover:underline"
+                  className="hover:text-navbar-active transition-colors hover:underline text-primary"
                 >
                   @lorebianchi
                 </Link>
               </p>
 
               <p>
-                <span className="text-primary/50">Github (2nd):</span>{" "}
+                <span className="text-active/50 font-bold">Github (2nd):</span>{" "}
                 <Link
                   href="https://github.com/lorenzobianchi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-navbar-active transition-colors hover:underline"
+                  className="hover:text-navbar-active transition-colors hover:underline text-primary"
                 >
                   @lorenzobianchi
                 </Link>
               </p>
 
               <p>
-                <span className="text-green-400/50">Based in:</span> <span>Bergamo, Italy 🇮🇹🍕</span>
+                <span className="text-active/50 font-bold">Linkedin:</span>{" "}
+                <Link
+                  href="hhttps://www.linkedin.com/in/lorenzo-bianchi-ba6622bb/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-navbar-active transition-colors hover:underline text-primary"
+                >
+                  Lorenzo Bianchi
+                </Link>
+              </p>
+
+              <p>
+                <span className="text-active/50 font-bold">Based in:</span> <span className="text-primary">Bergamo, Italy 🇮🇹🍕</span>
               </p>
             </div>
           </div>

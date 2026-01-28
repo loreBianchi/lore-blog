@@ -11,7 +11,7 @@ export function ExperimentTitle({ title, description }: ExperimentTitleProps) {
     <div className="mb-8 max-w-2xl mx-auto">
       <Link
         href="/experiments"
-        className="inline-flex items-center gap-2 text-primary/70 hover:text-primary/70 transition-colors mb-2 group cursor-pointer"
+        className="inline-flex items-center gap-2 text-primary/70 hover:text-active hover:underline transition-colors mb-2 group cursor-pointer"
       >
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         back to experiments

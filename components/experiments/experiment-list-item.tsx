@@ -10,17 +10,16 @@ export function ExperimentListItem({ item }: ExperimentListItemProps) {
     <Link
       key={item.slug}
       href={`/experiments/${item.slug}`}
-      className="block py-4 border-b border-primary/20 hover:bg-primary/5 transition-colors group px-4 -mx-4 cursor-pointer"
+      className="block py-4 border-b border-primary/20 hover:bg-primary/5 group px-4 -mx-4 cursor-pointer       
+      text-primary/50 hover:text-active group-hover:text-primary/70 transition-colors"
     >
       <div className="flex items-baseline gap-4">
-        <span className="text-primary/50 text-sm font-mono min-w-[3ch]">{item.id}:</span>
+        <span className="text-sm font-mono min-w-[3ch]">{item.id}:</span>
         <div className="flex-1">
-          <h2 className="text-primary group-hover:text-primary/70 transition-colors font-medium">
-            {item.title}
-          </h2>
-          <p className="text-sm text-primary/50 mt-1">{item.description}</p>
+          <h2 className="font-medium">{item.title}</h2>
+          <p className="text-sm mt-1">{item.description}</p>
         </div>
-        <ArrowRight size={16} className="text-primary/30 group-hover:text-primary/70 transition-colors" />
+        <ArrowRight size={16} />
       </div>
     </Link>
   );
