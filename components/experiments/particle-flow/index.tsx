@@ -6,14 +6,20 @@ import { PlayPauseButton } from "../shared/play-pause-button";
 import { ColorPicker } from "../shared/color-picker";
 import { StatsPanel } from "../shared/stats-panel";
 import { CanvasContainer } from "../shared/canvas-container";
-import { colorOptions } from "@/data/experiments";
+import { galaxyTypes, instructions } from "@/data/experiments";
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
+import { ControlsContainer } from "../shared/controls-container";
+import { ControlsBtnGroup } from "../shared/controls-btn-group";
+import { InstructionsPanel } from "../shared/instructions-panel";
+import { RangeSlider } from "../shared/range-slider";
+import { colorMap, colorOptions } from "@/data/colors";
+import { ColorKey } from "@/types/colors";
 
 export const ParticleGalaxyExperiment = () => {
   const [particleCount, setParticleCount] = useState(3000);
   const [speed, setSpeed] = useState(1);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [colorScheme, setColorScheme] = useState("cyan");
+  const [colorScheme, setColorScheme] = useState<ColorKey>("cyan");
   const [galaxyType, setGalaxyType] = useState("spiral");
   const [isMounted, setIsMounted] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -171,12 +177,6 @@ export const ParticleGalaxyExperiment = () => {
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const colorMap: Record<string, THREE.Color> = {
-      cyan: new THREE.Color(0x00b4d8),
-      purple: new THREE.Color(0x9d4edd),
-      pink: new THREE.Color(0xff006e),
-    };
-
     const color = colorMap[colorScheme] || colorMap.cyan;
     const outerColor = new THREE.Color(0x7209b7);
 
@@ -289,12 +289,6 @@ export const ParticleGalaxyExperiment = () => {
     };
   }, [isPlaying, speed]);
 
-  const instructions = [
-    { icon: "🎯", text: "Drag to rotate camera", color: "#00B4D8" },
-    { icon: "🔍", text: "Scroll to zoom", color: "#9D4EDD" },
-    { icon: "⚡", text: "Adjust controls below", color: "#06D6A0" },
-  ];
-
   const stats = [
     {
       label: "PARTICLES",
@@ -303,12 +297,6 @@ export const ParticleGalaxyExperiment = () => {
     },
     { label: "SPEED", value: `${speed.toFixed(1)}x`, color: "#9D4EDD" },
     { label: "FPS", value: "60", color: "#06D6A0" },
-  ];
-
-  const galaxyTypes = [
-    { id: "spiral", name: "Spiral" },
-    { id: "elliptical", name: "Elliptical" },
-    { id: "irregular", name: "Irregular" },
   ];
 
   return (
@@ -320,72 +308,39 @@ export const ParticleGalaxyExperiment = () => {
         label={showControls ? "Hide Controls" : "Show Controls"}
       />
 
-      {/* Instructions Panel */}
-      <div
-        className={`absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-xl p-4 max-w-xs border border-white/10 z-10 transition-all duration-300 ${
-          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-          <span className="text-cyan-400">✨</span> Particle System
-        </h3>
-        <ul className="text-white/80 text-sm space-y-1">
-          {instructions.map((item, idx) => (
-            <li key={idx} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-              <span>{item.text}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <InstructionsPanel
+        title="Particle Flow Experiment"
+        icon={<span className="text-cyan-400">✨</span>}
+        instructions={instructions}
+        showControls={showControls}
+      />
 
-      {/* Stats Panel */}
       <StatsPanel stats={stats} showControls={showControls} />
 
-      {/* Controls Panel - Left side */}
-      <div
-        className={`absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-lg border border-white/10 rounded-2xl p-4 flex flex-col gap-3 z-10 transition-all duration-300 max-w-[280px] ${
-          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        {/* Play/Pause */}
+      <ControlsContainer showControls={showControls} position="bottom-left">
         <PlayPauseButton isPlaying={isPlaying} onToggle={() => setIsPlaying(!isPlaying)} />
 
         {/* Particle Count Slider */}
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-white/70 text-sm">Particles</span>
-            <span className="text-cyan-400 text-sm font-bold">
-              {isMounted ? particleCount.toLocaleString() : particleCount}
-            </span>
-          </div>
-          <input
-            type="range"
-            min={1000}
-            max={10000}
-            step={500}
-            value={particleCount}
-            onChange={(e) => setParticleCount(parseInt(e.target.value))}
-            className="w-full accent-cyan-500"
-          />
-        </div>
+        <RangeSlider
+          label="Particles"
+          value={particleCount}
+          min={1000}
+          max={10000}
+          step={500}
+          onChange={(v) => setParticleCount(v)}
+          accentColor="cyan"
+        />
 
         {/* Speed Slider */}
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-white/70 text-sm">Speed</span>
-            <span className="text-purple-400 text-sm font-bold">{speed.toFixed(1)}x</span>
-          </div>
-          <input
-            type="range"
-            min={0.1}
-            max={3}
-            step={0.1}
-            value={speed}
-            onChange={(e) => setSpeed(parseFloat(e.target.value))}
-            className="w-full accent-purple-500"
-          />
-        </div>
+        <RangeSlider
+          label="Rotation Speed"
+          value={speed}
+          min={0.1}
+          max={5}
+          step={0.1}
+          onChange={(v) => setSpeed(v)}
+          accentColor="purple"
+        />
 
         {/* Color Scheme */}
         <ColorPicker
@@ -395,25 +350,17 @@ export const ParticleGalaxyExperiment = () => {
         />
 
         {/* Galaxy Type */}
-        <div className="flex flex-col gap-2">
-          <span className="text-white/70 text-sm">Galaxy Type</span>
-          <div className="flex flex-col gap-1">
-            {galaxyTypes.map((type) => (
-              <button
-                key={type.id}
-                onClick={() => setGalaxyType(type.id)}
-                className={`px-3 py-2 rounded-lg text-sm capitalize transition-all border ${
-                  galaxyType === type.id
-                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-                }`}
-              >
-                {type.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+        <ControlsBtnGroup
+          buttons={galaxyTypes.map((type) => ({
+            label: type.name,
+            onClick: () => setGalaxyType(type.id),
+            className:
+              galaxyType === type.id
+                ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
+                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent",
+          }))}
+        />
+      </ControlsContainer>
     </CanvasContainer>
   );
 };

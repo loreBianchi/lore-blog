@@ -156,15 +156,6 @@ export const categories = [
   { id: "game", name: "Games", icon: "🎮" },
 ];
 
-// Color options used across experiments
-export const colorOptions = [
-  { id: "cyan", name: "Cyan", color: "#00B4D8" },
-  { id: "purple", name: "Purple", color: "#9D4EDD" },
-  { id: "pink", name: "Pink", color: "#FF006E" },
-  { id: "green", name: "Green", color: "#00FF88" },
-  { id: "blue", name: "Blue", color: "#4CC9F0" },
-];
-
 // Galaxy types for Particle Galaxy
 export const galaxyTypes = [
   { id: "spiral", name: "Spiral" },
@@ -177,4 +168,10 @@ export const instructions = [
   { icon: "🎯", text: "Drag to rotate camera", color: "#00B4D8" },
   { icon: "🔍", text: "Scroll to zoom", color: "#9D4EDD" },
   { icon: "⚡", text: "Adjust controls below", color: "#06D6A0" },
+];
+
+export const neonGridInstructions = [
+  { icon: "🔄", text: "Click & drag to rotate view", color: "#9b5de5" },
+  { icon: "📐", text: "Scroll to zoom in/out", color: "#00bbf9" },
+  { icon: "🎨", text: "Hover over cubes for effect", color: "#f15bb5" },
 ];

@@ -23,3 +23,10 @@ export interface StatItem {
   color: string
   inline?: boolean
 }
+
+export type GenArtSettings = {
+  particleCount: number;
+  speed: number;
+  size: number;
+  pattern: "flow" | "spiral" | "orbit" | "explosion";
+};

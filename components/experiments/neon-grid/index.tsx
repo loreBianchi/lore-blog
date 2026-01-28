@@ -3,19 +3,19 @@
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
-import { PlayPauseButton } from "../shared/play-pause-button";
-import { ResetButton } from "../shared/reset-button";
 import { CanvasContainer } from "../shared/canvas-container";
-import { ColorPicker } from "../shared/color-picker";
-import { colorOptions } from "@/data/experiments";
+import { neonGridInstructions } from "@/data/experiments";
 import { StatsPanel } from "../shared/stats-panel";
-import { RangeSlider } from "../shared/range-slider";
+import { InstructionsPanel } from "../shared/instructions-panel";
+import { colorsSets } from "@/data/colors";
+import Controls from "./controls";
+import { ColorKey } from "@/types/colors";
 
 export function NeonGridExperiment() {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [gridSize, setGridSize] = useState<number>(10);
   const [neonIntensity, setNeonIntensity] = useState<number>(2);
-  const [colorScheme, setColorScheme] = useState<"purple" | "cyan" | "pink">("purple");
+  const [colorScheme, setColorScheme] = useState<ColorKey>("purple");
   const [showControls, setShowControls] = useState<boolean>(true);
 
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -209,25 +209,7 @@ export function NeonGridExperiment() {
   useEffect(() => {
     if (!sceneRef.current) return;
 
-    const colors = {
-      purple: {
-        primary: 0x9d4edd,
-        secondary: 0x7b2cbf,
-        glow: 0xc77dff,
-      },
-      cyan: {
-        primary: 0x00b4d8,
-        secondary: 0x0077b6,
-        glow: 0x90e0ef,
-      },
-      pink: {
-        primary: 0xff006e,
-        secondary: 0xff0054,
-        glow: 0xff5c8d,
-      },
-    };
-
-    const currentColors = colors[colorScheme];
+    const currentColors = colorsSets[colorScheme];
 
     // Remove old boxes
     boxesRef.current.forEach((box) => {
@@ -360,78 +342,32 @@ export function NeonGridExperiment() {
     <CanvasContainer>
       <div ref={canvasRef} className="w-full h-full" />
 
-      {/* Toggle Controls Button */}
       <ToggleControlsBtn
         onClick={() => setShowControls(!showControls)}
         label={showControls ? "Hide Controls" : "Show Controls"}
       />
 
-      {/* Instructions Panel */}
-      <div
-        className={`absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-xl p-4 max-w-xs border border-white/10 z-10 transition-all duration-300 ${
-          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-          <span className="text-cyan-400">⚡</span> Neon Grid Controls
-        </h3>
-        <ul className="text-white/80 text-sm space-y-1">
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-            <span>Click & drag to rotate view</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
-            <span>Scroll to zoom in/out</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-            <span>Hover over cubes for effect</span>
-          </li>
-        </ul>
-      </div>
+      <InstructionsPanel
+        title="Neon Grid Experiment"
+        icon={<span className="text-cyan-400">💠</span>}
+        instructions={neonGridInstructions}
+        showControls={showControls}
+      />
 
-      {/* Stats Panel */}
       <StatsPanel stats={stats} showControls={showControls} />
 
-      {/* Controls Panel - Positioned on left side */}
-      <div
-        className={`absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-lg border border-white/10 rounded-2xl p-4 flex flex-col gap-3 z-10 transition-all duration-300 max-w-[280px] ${
-          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        {/* Play/Pause */}
-        <PlayPauseButton isPlaying={isPlaying} onToggle={() => setIsPlaying(!isPlaying)} />
-        {/* Grid Size Slider */}
-        <RangeSlider
-          label="Grid Size"
-          value={gridSize}
-          min={5}
-          max={20}
-          step={1}
-          onChange={(value) => setGridSize(value)}
-          accentColor="cyan"
-        />
-        {/* Neon Intensity */}
-        <RangeSlider
-          label="Glow"
-          value={neonIntensity}
-          min={0.5}
-          max={5}
-          step={0.1}
-          onChange={(value) => setNeonIntensity(value)}
-          accentColor="pink"
-        />
-        {/* Color Scheme */}
-        <ColorPicker
-          colors={colorOptions}
-          selected={colorScheme}
-          className="justify-center"
-          onChange={(id) => setColorScheme(id as "purple" | "cyan" | "pink")}
-        />
-
-        <ResetButton onReset={handleReset} className="mt-2" />
-      </div>
+      <Controls
+        showControls={showControls}
+        isPlaying={isPlaying}
+        onTogglePlay={() => setIsPlaying(!isPlaying)}
+        gridSize={gridSize}
+        onGridSizeChange={setGridSize}
+        neonIntensity={neonIntensity}
+        onNeonIntensityChange={setNeonIntensity}
+        colorScheme={colorScheme}
+        onColorSchemeChange={(id) => setColorScheme(id as "purple" | "cyan" | "pink")}
+        onReset={handleReset}
+      />
     </CanvasContainer>
   );
 }

@@ -5,6 +5,13 @@ import * as THREE from "three";
 
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+import { InstructionsPanel } from "../shared/instructions-panel";
+import { instructions } from "@/data/experiments";
+import { CanvasContainer } from "../shared/canvas-container";
+import { ResetButton } from "../shared/reset-button";
+import { ControlsContainer } from "../shared/controls-container";
+import { RangeSlider } from "../shared/range-slider";
+import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
 
 export default function ASCIIArtExperiment() {
   const [text, setText] = useState("ASCII 3D");
@@ -29,7 +36,11 @@ export default function ASCIIArtExperiment() {
   const characterSets = [
     { id: "default", name: "Default", chars: " .:-+*=%@#" },
     { id: "simple", name: "Simple", chars: " .:░▒▓█" },
-    { id: "dense", name: "Dense", chars: " .':;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$" },
+    {
+      id: "dense",
+      name: "Dense",
+      chars: " .':;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
+    },
     { id: "binary", name: "Binary", chars: "01" },
     { id: "blocks", name: "Blocks", chars: " ░▒▓█" },
   ];
@@ -76,7 +87,7 @@ export default function ASCIIArtExperiment() {
       50,
       containerRef.current.clientWidth / containerRef.current.clientHeight,
       0.1,
-      1000
+      1000,
     );
     camera.position.set(0, 0, 10);
     camera.lookAt(0, 0, 0);
@@ -104,7 +115,7 @@ export default function ASCIIArtExperiment() {
 
     // Load font and create 3D text
     const loader = new FontLoader();
-    loader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
+    loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
       if (!sceneRef.current) return;
 
       // Remove old mesh if exists
@@ -159,13 +170,11 @@ export default function ASCIIArtExperiment() {
       const deltaY = e.clientY - previousMousePosition.y;
 
       const spherical = {
-        radius: Math.sqrt(
-          camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
-        ),
+        radius: Math.sqrt(camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2),
         theta: Math.atan2(camera.position.x, camera.position.z),
         phi: Math.acos(
           camera.position.y /
-            Math.sqrt(camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2)
+            Math.sqrt(camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2),
         ),
       };
 
@@ -191,7 +200,7 @@ export default function ASCIIArtExperiment() {
 
       const delta = e.deltaY * zoomSpeed;
       const currentDistance = Math.sqrt(
-        camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
+        camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2,
       );
       const newDistance = Math.max(3, Math.min(50, currentDistance + delta));
       const scale = newDistance / currentDistance;
@@ -215,9 +224,13 @@ export default function ASCIIArtExperiment() {
 
     const handleResize = () => {
       if (!containerRef.current || !cameraRef.current || !rendererRef.current) return;
-      cameraRef.current.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
+      cameraRef.current.aspect =
+        containerRef.current.clientWidth / containerRef.current.clientHeight;
       cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+      rendererRef.current.setSize(
+        containerRef.current.clientWidth,
+        containerRef.current.clientHeight,
+      );
     };
 
     window.addEventListener("resize", handleResize);
@@ -273,12 +286,6 @@ export default function ASCIIArtExperiment() {
     setIsAutoRotate(true);
   };
 
-  const instructions = [
-    { icon: "🔄", text: "Drag to rotate camera", color: "#00ff88" },
-    { icon: "📐", text: "Scroll to zoom in/out", color: "#ff00ff" },
-    { icon: "🎨", text: "Adjust settings below", color: "#00ffff" },
-  ];
-
   const stats = [
     { label: "CHARS", value: characters.length, color: "#00ff88" },
     { label: "FPS", value: fps, color: "#ff00ff" },
@@ -286,203 +293,158 @@ export default function ASCIIArtExperiment() {
   ];
 
   return (
-    <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-2xl">
-      <div className="w-full h-full bg-linear-to-br from-gray-900 via-black to-green-900/20">
-        <div ref={containerRef} className="w-full h-full" />
+    <CanvasContainer>
+      <div ref={containerRef} className="w-full h-full" />
 
-        {/* Toggle Controls Button */}
-        <button
-          onClick={() => setShowControls(!showControls)}
-          className="absolute top-4 right-4 z-20 px-3 py-2 rounded-lg bg-black/70 backdrop-blur-sm border border-white/10 hover:bg-black/80 transition-all text-white/80 hover:text-white text-sm"
-        >
-          {showControls ? "Hide Controls" : "Show Controls"}
-        </button>
+      <ToggleControlsBtn onClick={() => setShowControls(!showControls)} />
 
-        {/* Instructions Panel */}
-        <div
-          className={`absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-xl p-4 max-w-xs border border-white/10 z-10 transition-all duration-300 ${
-            showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-            <span className="text-green-400">💻</span> ASCII Controls
-          </h3>
-          <ul className="text-white/80 text-sm space-y-1">
-            {instructions.map((item, idx) => (
-              <li key={idx} className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                <span>{item.text}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Stats Panel */}
-        <div
-          className={`absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm rounded-xl p-3 border border-white/10 z-10 transition-all duration-300 ${
-            showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <div className="space-y-2">
-            {stats.map((stat, idx) => (
-              <div key={idx}>
-                <div className="text-white/60 text-xs">{stat.label}</div>
-                <div className="text-lg font-bold" style={{ color: stat.color }}>
-                  {stat.value}
-                </div>
+      {/* Instructions Panel */}
+      <InstructionsPanel
+        title="ASCII 3D Experiment"
+        icon={<span className="text-cyan-400">💠</span>}
+        instructions={instructions}
+        showControls={showControls}
+      />
+      {/* Stats Panel */}
+      <div
+        className={`absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm rounded-xl p-3 border border-white/10 z-10 transition-all duration-300 ${
+          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="space-y-2">
+          {stats.map((stat, idx) => (
+            <div key={idx}>
+              <div className="text-white/60 text-xs">{stat.label}</div>
+              <div className="text-lg font-bold" style={{ color: stat.color }}>
+                {stat.value}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Controls Panel - Left side */}
-        <div
-          className={`absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 backdrop-blur-lg border border-white/10 rounded-2xl p-4 flex flex-col gap-3 z-10 transition-all duration-300 max-w-[280px] ${
-            showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          {/* Text Input */}
-          <div className="flex flex-col gap-2">
-            <span className="text-white/70 text-sm">Text</span>
-            <input
-              type="text"
-              value={text}
-              onChange={(e) => setText(e.target.value.toUpperCase())}
-              maxLength={10}
-              className="px-3 py-2 rounded-lg bg-white/10 text-white border border-white/20 
-                focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500
-                text-center font-mono"
-            />
-          </div>
-
-          {/* Font Size */}
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="text-white/70 text-sm">Size</span>
-              <span className="text-green-400 text-sm font-bold">{fontSize.toFixed(1)}</span>
             </div>
-            <input
-              type="range"
-              min={0.5}
-              max={3}
-              step={0.1}
-              value={fontSize}
-              onChange={(e) => setFontSize(parseFloat(e.target.value))}
-              className="w-full accent-green-500"
-            />
-          </div>
-
-          {/* Render Scale */}
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="text-white/70 text-sm">Scale</span>
-              <span className="text-cyan-400 text-sm font-bold">{renderScale}x</span>
-            </div>
-            <input
-              type="range"
-              min={1}
-              max={10}
-              step={1}
-              value={renderScale}
-              onChange={(e) => setRenderScale(parseInt(e.target.value))}
-              className="w-full accent-cyan-500"
-            />
-          </div>
-
-          {/* Color Scheme */}
-          <div className="flex flex-col gap-2">
-            <span className="text-white/70 text-sm">Color</span>
-            <div className="flex gap-2 flex-wrap">
-              {colorSchemes.map((scheme) => (
-                <button
-                  key={scheme.id}
-                  onClick={() => setColor(scheme.color)}
-                  className={`w-8 h-8 rounded-full transition-all ${
-                    color === scheme.color
-                      ? "ring-2 ring-white scale-110"
-                      : "opacity-50 hover:opacity-100"
-                  }`}
-                  style={{ backgroundColor: scheme.color }}
-                  aria-label={scheme.name}
-                  title={scheme.name}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Character Set */}
-          <div className="flex flex-col gap-2">
-            <span className="text-white/70 text-sm">Character Set</span>
-            <div className="flex flex-col gap-1">
-              {characterSets.map((set) => (
-                <button
-                  key={set.id}
-                  onClick={() => setCharacters(set.chars)}
-                  className={`px-3 py-2 rounded-lg text-sm text-left transition-all border ${
-                    characters === set.chars
-                      ? "bg-green-500/20 text-green-300 border-green-500/30"
-                      : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span>{set.name}</span>
-                    <span className="text-xs opacity-60">{set.chars.length}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Toggle Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setInvert(!invert)}
-              className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
-                invert
-                  ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
-                  : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-              }`}
-            >
-              Invert
-            </button>
-            <button
-              onClick={() => setIsAutoRotate(!isAutoRotate)}
-              className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
-                isAutoRotate
-                  ? "bg-green-500/20 text-green-300 border-green-500/30"
-                  : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-              }`}
-            >
-              Auto Rotate
-            </button>
-          </div>
-
-          {/* Rotation Speed */}
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="text-white/70 text-sm">Speed</span>
-              <span className="text-blue-400 text-sm font-bold">{rotationSpeed.toFixed(1)}x</span>
-            </div>
-            <input
-              type="range"
-              min={0.5}
-              max={3}
-              step={0.1}
-              value={rotationSpeed}
-              onChange={(e) => setRotationSpeed(parseFloat(e.target.value))}
-              className="w-full accent-blue-500"
-            />
-          </div>
-
-          {/* Reset Button */}
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-white"
-          >
-            Reset
-          </button>
+          ))}
         </div>
       </div>
-    </div>
+
+      {/* Controls Panel - Left side */}
+      <ControlsContainer position="top-left" showControls={showControls}>
+        {/* Text Input */}
+        <div className="flex flex-col gap-2">
+          <span className="text-white/70 text-sm">Text</span>
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value.toUpperCase())}
+            maxLength={10}
+            className="px-3 py-2 rounded-lg bg-white/10 text-white border border-white/20 
+                focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500
+                text-center font-mono"
+          />
+        </div>
+
+        {/* Font Size */}
+        <RangeSlider
+          label="Font Size"
+          value={fontSize}
+          min={0.5}
+          max={3}
+          step={0.1}
+          onChange={(v) => setFontSize(v)}
+        />
+        {/* Render Scale */}
+        <RangeSlider
+          label="Render Scale"
+          value={renderScale}
+          min={1}
+          max={10}
+          step={1}
+          onChange={(v) => setRenderScale(v)}
+        />
+
+        {/* Color Scheme */}
+        <div className="flex flex-col gap-2">
+          <span className="text-white/70 text-sm">Color</span>
+          <div className="flex gap-2 flex-wrap">
+            {colorSchemes.map((scheme) => (
+              <button
+                key={scheme.id}
+                onClick={() => setColor(scheme.color)}
+                className={`w-8 h-8 rounded-full transition-all ${
+                  color === scheme.color
+                    ? "ring-2 ring-white scale-110"
+                    : "opacity-50 hover:opacity-100"
+                }`}
+                style={{ backgroundColor: scheme.color }}
+                aria-label={scheme.name}
+                title={scheme.name}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Character Set */}
+        <div className="flex flex-col gap-2">
+          <span className="text-white/70 text-sm">Character Set</span>
+          <div className="flex flex-col gap-1">
+            {characterSets.map((set) => (
+              <button
+                key={set.id}
+                onClick={() => setCharacters(set.chars)}
+                className={`px-3 py-2 rounded-lg text-sm text-left transition-all border ${
+                  characters === set.chars
+                    ? "bg-green-500/20 text-green-300 border-green-500/30"
+                    : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <span>{set.name}</span>
+                  <span className="text-xs opacity-60">{set.chars.length}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggle Buttons */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setInvert(!invert)}
+            className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
+              invert
+                ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
+            }`}
+          >
+            Invert
+          </button>
+          <button
+            onClick={() => setIsAutoRotate(!isAutoRotate)}
+            className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
+              isAutoRotate
+                ? "bg-green-500/20 text-green-300 border-green-500/30"
+                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
+            }`}
+          >
+            Auto Rotate
+          </button>
+        </div>
+
+        {/* Rotation Speed */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <span className="text-white/70 text-sm">Speed</span>
+            <span className="text-blue-400 text-sm font-bold">{rotationSpeed.toFixed(1)}x</span>
+          </div>
+          <input
+            type="range"
+            min={0.5}
+            max={3}
+            step={0.1}
+            value={rotationSpeed}
+            onChange={(e) => setRotationSpeed(parseFloat(e.target.value))}
+            className="w-full accent-blue-500"
+          />
+        </div>
+
+        <ResetButton onReset={handleReset} />
+      </ControlsContainer>
+    </CanvasContainer>
   );
 }

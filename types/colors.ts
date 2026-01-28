@@ -19,3 +19,17 @@ export const colorNames: Record<ColorKey, string> = {
   red: "red",
   blue: "blue",
 };
+
+export type ColorOption = {
+  id: ColorKey;
+  name: string;
+  color: string;
+};
+
+export type ColorSet = {
+  primary: number;
+  secondary: number;
+  glow: number;
+};
+
+export type ColorSetGroup = Record<ColorKey, ColorSet>;

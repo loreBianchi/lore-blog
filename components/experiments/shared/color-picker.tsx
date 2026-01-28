@@ -1,13 +1,15 @@
+import { ColorKey } from "@/types/colors";
+
 interface ColorOption {
-  id: string;
+  id: ColorKey;
   name: string;
   color: string;
 }
 
 interface ColorPickerProps {
   colors: ColorOption[];
-  selected: string;
-  onChange: (id: string) => void;
+  selected: ColorKey;
+  onChange: (id: ColorKey) => void;
   className?: string;
 }
 
@@ -20,7 +22,7 @@ export function ColorPicker({ colors, selected, onChange, className }: ColorPick
           <button
             key={color.id}
             onClick={() => onChange(color.id)}
-            className={`w-8 h-8 rounded-full transition-all ${
+            className={`w-6 h-6 rounded-full transition-all ${
               selected === color.id ? "ring-2 ring-white scale-110" : "opacity-50 hover:opacity-100"
             }`}
             style={{ backgroundColor: color.color }}
