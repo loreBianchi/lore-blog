@@ -17,6 +17,7 @@ import { ControlsBtnGroup } from "../shared/controls-btn-group";
 import { ColorPicker } from "../shared/color-picker";
 import { ColorKey } from "@/types/colors";
 import { colorMap, colorOptions } from "@/data/colors";
+import { ControlsButton } from "../shared/controls-button";
 
 export default function ASCIIArtExperiment() {
   const [text, setText] = useState("ASCII 3D");
@@ -143,40 +144,55 @@ export default function ASCIIArtExperiment() {
   const createOrUpdateMesh = () => {
     if (!fontRef.current || !sceneRef.current) return;
 
-    // Se il mesh esiste già, aggiorna solo il colore
+    // Rimuovi vecchio mesh
     if (meshRef.current) {
-      (meshRef.current.material as THREE.MeshStandardMaterial).color.set(
-        invert ? 0x000000 : (colorOptions[colorScheme]?.color ?? "#00ffff"),
-      );
-      return;
+      sceneRef.current.remove(meshRef.current);
+      meshRef.current.geometry.dispose();
+      if (Array.isArray(meshRef.current.material)) {
+        meshRef.current.material.forEach((m) => m.dispose());
+      } else {
+        (meshRef.current.material as THREE.Material).dispose();
+      }
     }
 
-    // Crea nuovo mesh
+    // Geometria
     const geometry = new TextGeometry(text, {
       font: fontRef.current,
       size: fontSize,
       curveSegments: 12,
       bevelEnabled: true,
-      bevelThickness: 0.02,
-      bevelSize: 0.02,
+      bevelThickness: 0.05, // un po' più spesso
+      bevelSize: 0.03,
       bevelOffset: 0,
       bevelSegments: 5,
     });
+
     geometry.computeBoundingBox();
     const centerOffset = geometry.boundingBox
       ? -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x)
       : 0;
     geometry.translate(centerOffset, 0, 0);
 
+    // Materiale principale
+    const color = colorMap[colorScheme] ?? new THREE.Color(0x00ffff);
     const material = new THREE.MeshStandardMaterial({
-      color: invert
-        ? new THREE.Color(0x000000)
-        : (colorMap[colorScheme] ?? new THREE.Color(0x00ffff)),
+      color,
       metalness: 0.3,
       roughness: 0.7,
+      emissive: color.clone().multiplyScalar(0.6), // leggero glow
     });
 
     const mesh = new THREE.Mesh(geometry, material);
+
+    // Outline mesh per leggibilità
+    const outlineMaterial = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      side: THREE.BackSide, // parte interna
+    });
+    const outlineMesh = new THREE.Mesh(geometry.clone(), outlineMaterial);
+    outlineMesh.scale.multiplyScalar(1.02); // leggermente più grande
+    mesh.add(outlineMesh); // aggiunge l'outline come child
+
     sceneRef.current.add(mesh);
     meshRef.current = mesh;
   };
@@ -192,15 +208,17 @@ export default function ASCIIArtExperiment() {
     createOrUpdateMesh();
   }, [text, fontSize]);
 
-  // --- Aggiorna colore mesh quando cambia colorScheme o invert ---
+  // --- Aggiorna colore testo quando cambia colorScheme ---
   useEffect(() => {
     if (meshRef.current) {
       const mat = meshRef.current.material as THREE.MeshStandardMaterial;
-      mat.color.copy(invert ? new THREE.Color(0x000000) : colorMap[colorScheme]);
+      mat.color.copy(colorMap[colorScheme]);
+      mat.emissive.copy(colorMap[colorScheme]).multiplyScalar(0.3); // glow
       mat.needsUpdate = true;
     }
-  }, [colorScheme, invert]);
-  // --- Aggiorna background invert ---
+  }, [colorScheme]);
+
+  // --- Aggiorna solo background con invert ---
   useEffect(() => {
     if (rendererRef.current) {
       rendererRef.current.setClearColor(invert ? 0xffffff : 0x000000, 1);
@@ -271,15 +289,24 @@ export default function ASCIIArtExperiment() {
           />
         </div>
 
-        <ColorPicker
-          display="grid"
-          colors={colorOptions}
-          selected={colorScheme}
-          className="justify-center"
-          onChange={setColorScheme}
-        />
+        <div className="flex gap-2 flex-col">
+          <ColorPicker
+            display="grid"
+            colors={colorOptions}
+            selected={colorScheme}
+            className="justify-center"
+            onChange={setColorScheme}
+          />
+          <ControlsButton onClick={() => setInvert(!invert)} isActive={invert} label="Invert" />
+          {/* <ControlsButton
+            onClick={() => setIsAutoRotate(!isAutoRotate)}
+            isActive={isAutoRotate}
+            label="Auto Rotate"
+          /> */}
+          <ResetButton onReset={handleReset} />
+        </div>
 
-        <ControlsBtnGroup
+        {/* <ControlsBtnGroup
           label="Character Set"
           size="sm"
           buttons={characterSets.map((set) => ({
@@ -288,31 +315,7 @@ export default function ASCIIArtExperiment() {
             isActive: characters === set.chars,
           }))}
         />
-
-        <div className="flex gap-2">
-          <button
-            onClick={() => setInvert(!invert)}
-            className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
-              invert
-                ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
-                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-            }`}
-          >
-            Invert
-          </button>
-          <button
-            onClick={() => setIsAutoRotate(!isAutoRotate)}
-            className={`flex-1 px-3 py-2 rounded-lg text-sm transition-all border ${
-              isAutoRotate
-                ? "bg-green-500/20 text-green-300 border-green-500/30"
-                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-            }`}
-          >
-            Auto Rotate
-          </button>
-        </div>
-
-        <ResetButton onReset={handleReset} />
+ */}
       </ControlsContainer>
     </CanvasContainer>
   );
