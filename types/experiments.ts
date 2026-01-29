@@ -24,9 +24,37 @@ export interface StatItem {
   inline?: boolean
 }
 
+// Settings for Generative Art experiment
 export type GenArtSettings = {
   particleCount: number;
   speed: number;
   size: number;
   pattern: "flow" | "spiral" | "orbit" | "explosion";
 };
+
+// Settings for Audio Visualizer experiment
+export type WaveForm = "sine" | "square" | "sawtooth" | "triangle";
+export type WaveFormName =
+  | "Sine"
+  | "Square"
+  | "Sawtooth"
+  | "Triangle";
+
+export type WaveFormOption = {
+  id: WaveForm;
+  name: WaveFormName;
+};
+
+export type VisualizerType = "bars" | "wave" | "circular";
+
+export type VisualizerTypeName =
+  | "Bars"
+  | "Wave"
+  | "Circular";
+
+export type VisualizerOption = {
+  id: VisualizerType;
+  name: VisualizerTypeName;
+};
+
+

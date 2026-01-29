@@ -1,4 +1,4 @@
-import { Experiment } from "@/types/experiment";
+import { Experiment } from "@/types/experiments";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 

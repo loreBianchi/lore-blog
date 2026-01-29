@@ -1,6 +1,6 @@
 "use client";
 
-import { StatItem } from "@/types/experiment";
+import { StatItem } from "@/types/experiments";
 
 interface StatsPanelProps {
   stats: StatItem[];

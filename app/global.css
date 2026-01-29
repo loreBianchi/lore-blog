@@ -91,12 +91,21 @@
 
 :root[data-theme="cyber"] {
   background-color: var(--color-background-cyber);
+  .hello-bg {
+    background-image: url("/images/hello-bg-dark-4.png");
+  }
 }
 
 :root[data-theme="pastel"] {
   background-color: var(--color-background-pastel);
+  .hello-bg {
+    background-image: url("/images/hello-bg-dark-3.png");
+  }
 }
 
 :root[data-theme="water"] {
   background-color: var(--color-background-water);
+  .hello-bg {
+    background-image: url("/images/hello-bg-dark-2.png");
+  }
 }

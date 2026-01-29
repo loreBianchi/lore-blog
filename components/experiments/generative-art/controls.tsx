@@ -1,6 +1,6 @@
 "use client";
 
-import { GenArtSettings } from "@/types/experiment";
+import { GenArtSettings } from "@/types/experiments";
 import { useState } from "react";
 import { RangeSlider } from "../shared/range-slider";
 import { ControlsContainer } from "../shared/controls-container";

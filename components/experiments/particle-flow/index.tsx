@@ -351,13 +351,11 @@ export const ParticleGalaxyExperiment = () => {
 
         {/* Galaxy Type */}
         <ControlsBtnGroup
+          label="Galaxy Type"
           buttons={galaxyTypes.map((type) => ({
             label: type.name,
             onClick: () => setGalaxyType(type.id),
-            className:
-              galaxyType === type.id
-                ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
-                : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent",
+            isActive: galaxyType === type.id,
           }))}
         />
       </ControlsContainer>

@@ -4,7 +4,7 @@ import p5 from "p5";
 import { useRef, useCallback } from "react";
 import { useP5 } from "@/hooks/useP5";
 import Controls from "./controls";
-import { GenArtSettings } from "@/types/experiment";
+import { GenArtSettings } from "@/types/experiments";
 import { CanvasContainer } from "../shared/canvas-container";
 
 export default function GenerativeArt() {

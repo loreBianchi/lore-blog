@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DesktopNav } from "./desktop-nav";
-import { NavItem } from "@/types/navigation";
+import { NavItem } from "@/types/ui";
 import { MobileNav } from "./mobile-nav";
 import { MobileMenuBtn } from "./mobile-menu-btn";
 import { ThemeToggle } from "@/components/ui/theme-toggle";

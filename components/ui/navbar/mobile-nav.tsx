@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "../theme-toggle";
-import { NavItem } from "@/types/navigation";
+import { NavItem } from "@/types/ui";
 
 interface MobileNavProps {
   items?: NavItem[];

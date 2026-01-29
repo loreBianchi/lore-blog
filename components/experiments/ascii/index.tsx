@@ -12,26 +12,31 @@ import { ResetButton } from "../shared/reset-button";
 import { ControlsContainer } from "../shared/controls-container";
 import { RangeSlider } from "../shared/range-slider";
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
+import { StatsPanel } from "../shared/stats-panel";
+import { ControlsBtnGroup } from "../shared/controls-btn-group";
+import { ColorPicker } from "../shared/color-picker";
+import { ColorKey } from "@/types/colors";
+import { colorMap, colorOptions } from "@/data/colors";
 
 export default function ASCIIArtExperiment() {
   const [text, setText] = useState("ASCII 3D");
   const [fontSize, setFontSize] = useState(1.5);
-  const [renderScale, setRenderScale] = useState(5);
-  const [color, setColor] = useState("#00ff88");
+  const [rotationSpeed, setRotationSpeed] = useState(1);
   const [invert, setInvert] = useState(false);
   const [isAutoRotate, setIsAutoRotate] = useState(true);
   const [characters, setCharacters] = useState(" .:-+*=%@#");
-  const [rotationSpeed, setRotationSpeed] = useState(1);
+  const [colorScheme, setColorScheme] = useState<ColorKey>("cyan");
   const [fps, setFps] = useState(60);
   const [showControls, setShowControls] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const meshRef = useRef<THREE.Mesh | null>(null);
-  const animationIdRef = useRef<number | null>(null);
-  const controlsRef = useRef<any>(null);
+  const sceneRef = useRef<THREE.Scene>(undefined);
+  const cameraRef = useRef<THREE.PerspectiveCamera>(undefined);
+  const rendererRef = useRef<THREE.WebGLRenderer>(undefined);
+  const meshRef = useRef<THREE.Mesh>(undefined);
+  const animationIdRef = useRef<number>(undefined);
+  // @ts-ignore
+  const fontRef = useRef<THREE.Font>();
 
   const characterSets = [
     { id: "default", name: "Default", chars: " .:-+*=%@#" },
@@ -45,42 +50,28 @@ export default function ASCIIArtExperiment() {
     { id: "blocks", name: "Blocks", chars: " ░▒▓█" },
   ];
 
-  const colorSchemes = [
-    { id: "neon-green", name: "Neon Green", color: "#00ff88" },
-    { id: "cyberpunk", name: "Cyberpunk", color: "#ff00ff" },
-    { id: "matrix", name: "Matrix", color: "#00ff00" },
-    { id: "retro", name: "Retro", color: "#ff8800" },
-    { id: "ice", name: "Ice", color: "#00ffff" },
-  ];
-
-  // FPS counter
+  // --- FPS counter ---
   useEffect(() => {
     let frameCount = 0;
     let lastTime = performance.now();
-
     const updateFps = () => {
       frameCount++;
-      const currentTime = performance.now();
-
-      if (currentTime - lastTime >= 1000) {
-        setFps(Math.round((frameCount * 1000) / (currentTime - lastTime)));
+      const now = performance.now();
+      if (now - lastTime >= 1000) {
+        setFps(Math.round((frameCount * 1000) / (now - lastTime)));
         frameCount = 0;
-        lastTime = currentTime;
+        lastTime = now;
       }
-
       requestAnimationFrame(updateFps);
     };
-
-    const animationId = requestAnimationFrame(updateFps);
-    return () => cancelAnimationFrame(animationId);
+    updateFps();
   }, []);
 
-  // Setup Three.js scene
+  // --- Initialize scene, camera, renderer ---
   useEffect(() => {
     if (!containerRef.current) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(invert ? 0xffffff : 0x000000);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(
@@ -93,9 +84,10 @@ export default function ASCIIArtExperiment() {
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(invert ? 0xffffff : 0x000000, 1);
     rendererRef.current = renderer;
 
     containerRef.current.innerHTML = "";
@@ -103,229 +95,153 @@ export default function ASCIIArtExperiment() {
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
     const pointLight1 = new THREE.PointLight(0xffffff, 1);
     pointLight1.position.set(10, 10, 10);
-    scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(new THREE.Color(color), 0.5);
+    const pointLight2 = new THREE.PointLight(
+      new THREE.Color(colorOptions[colorScheme]?.color ?? "#00ffff"),
+      0.5,
+    );
     pointLight2.position.set(-10, -10, -10);
-    scene.add(pointLight2);
+    scene.add(ambientLight, pointLight1, pointLight2);
 
-    // Load font and create 3D text
+    // Load font
     const loader = new FontLoader();
     loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-      if (!sceneRef.current) return;
-
-      // Remove old mesh if exists
-      if (meshRef.current) {
-        sceneRef.current.remove(meshRef.current);
-        meshRef.current.geometry.dispose();
-        if (Array.isArray(meshRef.current.material)) {
-          meshRef.current.material.forEach((m) => m.dispose());
-        } else {
-          (meshRef.current.material as THREE.Material).dispose();
-        }
-      }
-      const textGeometry = new TextGeometry(text, {
-        font: font,
-        size: fontSize,
-        curveSegments: 12,
-        bevelEnabled: true,
-        bevelThickness: 0.02,
-        bevelSize: 0.02,
-        bevelOffset: 0,
-        bevelSegments: 5,
-      });
-
-      // Center the text geometry
-      textGeometry.computeBoundingBox();
-      const centerOffset = textGeometry.boundingBox
-        ? -0.5 * (textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x)
-        : 0;
-      textGeometry.translate(centerOffset, 0, 0);
-
-      const material = new THREE.MeshNormalMaterial();
-      const mesh = new THREE.Mesh(textGeometry, material);
-      sceneRef.current.add(mesh);
-      meshRef.current = mesh;
+      fontRef.current = font;
+      createOrUpdateMesh();
     });
 
-    // Manual OrbitControls
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    const rotSpeed = 0.005;
-    const zoomSpeed = 0.1;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      isDragging = true;
-      previousMousePosition = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !cameraRef.current) return;
-
-      const deltaX = e.clientX - previousMousePosition.x;
-      const deltaY = e.clientY - previousMousePosition.y;
-
-      const spherical = {
-        radius: Math.sqrt(camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2),
-        theta: Math.atan2(camera.position.x, camera.position.z),
-        phi: Math.acos(
-          camera.position.y /
-            Math.sqrt(camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2),
-        ),
-      };
-
-      spherical.theta -= deltaX * rotSpeed;
-      spherical.phi -= deltaY * rotSpeed;
-      spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
-
-      camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
-      camera.position.y = spherical.radius * Math.cos(spherical.phi);
-      camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
-      camera.lookAt(0, 0, 0);
-
-      previousMousePosition = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseUp = () => {
-      isDragging = false;
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (!cameraRef.current) return;
-
-      const delta = e.deltaY * zoomSpeed;
-      const currentDistance = Math.sqrt(
-        camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2,
-      );
-      const newDistance = Math.max(3, Math.min(50, currentDistance + delta));
-      const scale = newDistance / currentDistance;
-
-      camera.position.multiplyScalar(scale);
-    };
-
-    renderer.domElement.addEventListener("mousedown", handleMouseDown);
-    renderer.domElement.addEventListener("mousemove", handleMouseMove);
-    renderer.domElement.addEventListener("mouseup", handleMouseUp);
-    renderer.domElement.addEventListener("wheel", handleWheel, { passive: false });
-
-    controlsRef.current = {
-      cleanup: () => {
-        renderer.domElement.removeEventListener("mousedown", handleMouseDown);
-        renderer.domElement.removeEventListener("mousemove", handleMouseMove);
-        renderer.domElement.removeEventListener("mouseup", handleMouseUp);
-        renderer.domElement.removeEventListener("wheel", handleWheel);
-      },
-    };
-
-    const handleResize = () => {
-      if (!containerRef.current || !cameraRef.current || !rendererRef.current) return;
-      cameraRef.current.aspect =
-        containerRef.current.clientWidth / containerRef.current.clientHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(
-        containerRef.current.clientWidth,
-        containerRef.current.clientHeight,
-      );
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (controlsRef.current?.cleanup) {
-        controlsRef.current.cleanup();
-      }
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-    };
-  }, [invert, color, text, fontSize]);
-
-  // Animation loop
-  useEffect(() => {
+    // Animation loop
     const animate = () => {
-      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
-
       if (meshRef.current && isAutoRotate) {
         meshRef.current.rotation.x += 0.005 * rotationSpeed;
         meshRef.current.rotation.y += 0.01 * rotationSpeed;
       }
-
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
+      if (renderer && scene && camera) renderer.render(scene, camera);
       animationIdRef.current = requestAnimationFrame(animate);
     };
+    animate();
 
-    animationIdRef.current = requestAnimationFrame(animate);
+    // Handle resize
+    const handleResize = () => {
+      if (!containerRef.current || !camera || !renderer) return;
+      camera.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
+      window.removeEventListener("resize", handleResize);
+      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
+      renderer.dispose();
+      containerRef.current!.innerHTML = "";
     };
-  }, [isAutoRotate, rotationSpeed]);
+  }, []);
+
+  // --- Create or update mesh ---
+  const createOrUpdateMesh = () => {
+    if (!fontRef.current || !sceneRef.current) return;
+
+    // Se il mesh esiste già, aggiorna solo il colore
+    if (meshRef.current) {
+      (meshRef.current.material as THREE.MeshStandardMaterial).color.set(
+        invert ? 0x000000 : (colorOptions[colorScheme]?.color ?? "#00ffff"),
+      );
+      return;
+    }
+
+    // Crea nuovo mesh
+    const geometry = new TextGeometry(text, {
+      font: fontRef.current,
+      size: fontSize,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5,
+    });
+    geometry.computeBoundingBox();
+    const centerOffset = geometry.boundingBox
+      ? -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x)
+      : 0;
+    geometry.translate(centerOffset, 0, 0);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: invert
+        ? new THREE.Color(0x000000)
+        : (colorMap[colorScheme] ?? new THREE.Color(0x00ffff)),
+      metalness: 0.3,
+      roughness: 0.7,
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    sceneRef.current.add(mesh);
+    meshRef.current = mesh;
+  };
+
+  // --- Aggiorna mesh solo se testo o dimensione cambiano ---
+  useEffect(() => {
+    if (meshRef.current) {
+      sceneRef.current?.remove(meshRef.current);
+      meshRef.current.geometry.dispose();
+      (meshRef.current.material as THREE.Material).dispose();
+      meshRef.current = undefined;
+    }
+    createOrUpdateMesh();
+  }, [text, fontSize]);
+
+  // --- Aggiorna colore mesh quando cambia colorScheme o invert ---
+  useEffect(() => {
+    if (meshRef.current) {
+      const mat = meshRef.current.material as THREE.MeshStandardMaterial;
+      mat.color.copy(invert ? new THREE.Color(0x000000) : colorMap[colorScheme]);
+      mat.needsUpdate = true;
+    }
+  }, [colorScheme, invert]);
+  // --- Aggiorna background invert ---
+  useEffect(() => {
+    if (rendererRef.current) {
+      rendererRef.current.setClearColor(invert ? 0xffffff : 0x000000, 1);
+    }
+  }, [invert]);
 
   const handleReset = () => {
     setText("ASCII 3D");
     setFontSize(1.5);
-    setRenderScale(5);
-    setColor("#00ff88");
+    setRotationSpeed(1);
     setInvert(false);
     setCharacters(" .:-+*=%@#");
-    setRotationSpeed(1);
     setIsAutoRotate(true);
   };
 
   const stats = [
-    { label: "CHARS", value: characters.length, color: "#00ff88" },
+    {
+      label: "CHARS",
+      value: characters.length,
+      color: colorOptions[colorScheme]?.color ?? "#00ffff",
+    },
     { label: "FPS", value: fps, color: "#ff00ff" },
-    { label: "SCALE", value: `${renderScale}x`, color: "#00ffff" },
+    { label: "SCALE", value: `${fontSize}x`, color: "#00ffff" },
   ];
 
   return (
-    <CanvasContainer>
+    <CanvasContainer theme="unset">
       <div ref={containerRef} className="w-full h-full" />
 
       <ToggleControlsBtn onClick={() => setShowControls(!showControls)} />
 
-      {/* Instructions Panel */}
       <InstructionsPanel
         title="ASCII 3D Experiment"
         icon={<span className="text-cyan-400">💠</span>}
         instructions={instructions}
         showControls={showControls}
       />
-      {/* Stats Panel */}
-      <div
-        className={`absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm rounded-xl p-3 border border-white/10 z-10 transition-all duration-300 ${
-          showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="space-y-2">
-          {stats.map((stat, idx) => (
-            <div key={idx}>
-              <div className="text-white/60 text-xs">{stat.label}</div>
-              <div className="text-lg font-bold" style={{ color: stat.color }}>
-                {stat.value}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Controls Panel - Left side */}
-      <ControlsContainer position="top-left" showControls={showControls}>
-        {/* Text Input */}
+      <StatsPanel stats={stats} showControls={showControls} />
+
+      <ControlsContainer position="bottom-left" showControls={showControls} display="horizontal">
         <div className="flex flex-col gap-2">
           <span className="text-white/70 text-sm">Text</span>
           <input
@@ -337,72 +253,42 @@ export default function ASCIIArtExperiment() {
                 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500
                 text-center font-mono"
           />
+          <RangeSlider
+            label="Font Size"
+            value={fontSize}
+            min={0.5}
+            max={3}
+            step={0.1}
+            onChange={setFontSize}
+          />
+          <RangeSlider
+            label="Rotation Speed"
+            value={rotationSpeed}
+            min={0.5}
+            max={3}
+            step={0.1}
+            onChange={setRotationSpeed}
+          />
         </div>
 
-        {/* Font Size */}
-        <RangeSlider
-          label="Font Size"
-          value={fontSize}
-          min={0.5}
-          max={3}
-          step={0.1}
-          onChange={(v) => setFontSize(v)}
+        <ColorPicker
+          display="grid"
+          colors={colorOptions}
+          selected={colorScheme}
+          className="justify-center"
+          onChange={setColorScheme}
         />
-        {/* Render Scale */}
-        <RangeSlider
-          label="Render Scale"
-          value={renderScale}
-          min={1}
-          max={10}
-          step={1}
-          onChange={(v) => setRenderScale(v)}
+
+        <ControlsBtnGroup
+          label="Character Set"
+          size="sm"
+          buttons={characterSets.map((set) => ({
+            label: set.name,
+            onClick: () => setCharacters(set.chars),
+            isActive: characters === set.chars,
+          }))}
         />
 
-        {/* Color Scheme */}
-        <div className="flex flex-col gap-2">
-          <span className="text-white/70 text-sm">Color</span>
-          <div className="flex gap-2 flex-wrap">
-            {colorSchemes.map((scheme) => (
-              <button
-                key={scheme.id}
-                onClick={() => setColor(scheme.color)}
-                className={`w-8 h-8 rounded-full transition-all ${
-                  color === scheme.color
-                    ? "ring-2 ring-white scale-110"
-                    : "opacity-50 hover:opacity-100"
-                }`}
-                style={{ backgroundColor: scheme.color }}
-                aria-label={scheme.name}
-                title={scheme.name}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Character Set */}
-        <div className="flex flex-col gap-2">
-          <span className="text-white/70 text-sm">Character Set</span>
-          <div className="flex flex-col gap-1">
-            {characterSets.map((set) => (
-              <button
-                key={set.id}
-                onClick={() => setCharacters(set.chars)}
-                className={`px-3 py-2 rounded-lg text-sm text-left transition-all border ${
-                  characters === set.chars
-                    ? "bg-green-500/20 text-green-300 border-green-500/30"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <span>{set.name}</span>
-                  <span className="text-xs opacity-60">{set.chars.length}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Toggle Buttons */}
         <div className="flex gap-2">
           <button
             onClick={() => setInvert(!invert)}
@@ -424,23 +310,6 @@ export default function ASCIIArtExperiment() {
           >
             Auto Rotate
           </button>
-        </div>
-
-        {/* Rotation Speed */}
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-white/70 text-sm">Speed</span>
-            <span className="text-blue-400 text-sm font-bold">{rotationSpeed.toFixed(1)}x</span>
-          </div>
-          <input
-            type="range"
-            min={0.5}
-            max={3}
-            step={0.1}
-            value={rotationSpeed}
-            onChange={(e) => setRotationSpeed(parseFloat(e.target.value))}
-            className="w-full accent-blue-500"
-          />
         </div>
 
         <ResetButton onReset={handleReset} />

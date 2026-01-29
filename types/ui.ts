@@ -4,3 +4,5 @@ export type NavItem = {
   isExternal: boolean;
   badge?: string;
 };
+
+export type Size = "sm" | "md" | "lg";
