@@ -23,6 +23,7 @@ export const ParticleGalaxyExperiment = () => {
   const [galaxyType, setGalaxyType] = useState("spiral");
   const [isMounted, setIsMounted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [canvasExpanded, setCanvasExpanded] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -300,12 +301,15 @@ export const ParticleGalaxyExperiment = () => {
   ];
 
   return (
-    <CanvasContainer>
+    <CanvasContainer isFullscreen={canvasExpanded}>
       <div ref={containerRef} className="w-full h-full" />
 
       <ToggleControlsBtn
-        onClick={() => setShowControls(!showControls)}
-        label={showControls ? "Hide Controls" : "Show Controls"}
+        onToggleClick={() => setShowControls(!showControls)}
+        isVisible={showControls}
+        onExpandClick={() => setCanvasExpanded(!canvasExpanded)}
+        isExpanded={canvasExpanded}
+        hasExpand
       />
 
       <InstructionsPanel

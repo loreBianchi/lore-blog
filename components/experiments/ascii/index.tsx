@@ -18,8 +18,10 @@ import { ColorPicker } from "../shared/color-picker";
 import { ColorKey } from "@/types/colors";
 import { colorMap, colorOptions } from "@/data/colors";
 import { ControlsButton } from "../shared/controls-button";
+import { useCanvasControls } from "@/hooks/useCanvasControls";
 
 export default function ASCIIArtExperiment() {
+  const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
   const [text, setText] = useState("ASCII 3D");
   const [fontSize, setFontSize] = useState(1.5);
   const [rotationSpeed, setRotationSpeed] = useState(1);
@@ -28,7 +30,6 @@ export default function ASCIIArtExperiment() {
   const [characters, setCharacters] = useState(" .:-+*=%@#");
   const [colorScheme, setColorScheme] = useState<ColorKey>("cyan");
   const [fps, setFps] = useState(60);
-  const [showControls, setShowControls] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>(undefined);
@@ -245,10 +246,16 @@ export default function ASCIIArtExperiment() {
   ];
 
   return (
-    <CanvasContainer theme="unset">
+    <CanvasContainer theme="unset" isFullscreen={canvasExpanded}>
       <div ref={containerRef} className="w-full h-full" />
 
-      <ToggleControlsBtn onClick={() => setShowControls(!showControls)} />
+      <ToggleControlsBtn
+        onToggleClick={toggleControls}
+        isVisible={showControls}
+        onExpandClick={toggleCanvasExpand}
+        isExpanded={canvasExpanded}
+        hasExpand
+      />
 
       <InstructionsPanel
         title="ASCII 3D Experiment"

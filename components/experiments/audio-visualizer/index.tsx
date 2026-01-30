@@ -9,14 +9,15 @@ import {
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
 import { InstructionsPanel } from "../shared/instructions-panel";
 import Controls from "./controls";
+import { useCanvasControls } from "@/hooks/useCanvasControls";
 
 export default function AudioVisualizerExperiment() {
+  const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [frequency, setFrequency] = useState(440);
   const [waveform, setWaveform] = useState<WaveForm>("sine");
   const [visualizerType, setVisualizerType] = useState<VisualizerType>("bars");
-  const [showControls, setShowControls] = useState(true);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -213,7 +214,13 @@ export default function AudioVisualizerExperiment() {
     <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-2xl bg-black">
       <canvas ref={canvasRef} width={1200} height={600} className="w-full h-full" />
 
-      <ToggleControlsBtn onClick={() => setShowControls((v) => !v)} />
+      <ToggleControlsBtn
+        onToggleClick={toggleControls}
+        isVisible={showControls}
+        onExpandClick={toggleCanvasExpand}
+        isExpanded={canvasExpanded}
+        hasExpand
+      />
 
       <InstructionsPanel
         instructions={audioVisualizerInstructions}

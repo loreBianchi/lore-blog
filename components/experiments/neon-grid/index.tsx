@@ -10,13 +10,14 @@ import { InstructionsPanel } from "../shared/instructions-panel";
 import { colorsSets } from "@/data/colors";
 import Controls from "./controls";
 import { ColorKey } from "@/types/colors";
+import { useCanvasControls } from "@/hooks/useCanvasControls";
 
 export function NeonGridExperiment() {
+  const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [gridSize, setGridSize] = useState<number>(10);
   const [neonIntensity, setNeonIntensity] = useState<number>(2);
   const [colorScheme, setColorScheme] = useState<ColorKey>("purple");
-  const [showControls, setShowControls] = useState<boolean>(true);
 
   const canvasRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -339,12 +340,15 @@ export function NeonGridExperiment() {
   };
 
   return (
-    <CanvasContainer>
+    <CanvasContainer isFullscreen={canvasExpanded}>
       <div ref={canvasRef} className="w-full h-full" />
 
       <ToggleControlsBtn
-        onClick={() => setShowControls(!showControls)}
-        label={showControls ? "Hide Controls" : "Show Controls"}
+        onToggleClick={toggleControls}
+        isVisible={showControls}
+        onExpandClick={toggleCanvasExpand}
+        isExpanded={canvasExpanded}
+        hasExpand
       />
 
       <InstructionsPanel
