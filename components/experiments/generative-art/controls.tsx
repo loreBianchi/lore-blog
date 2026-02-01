@@ -4,6 +4,7 @@ import { GenArtSettings } from "@/types/experiments";
 import { useState } from "react";
 import { RangeSlider } from "../shared/range-slider";
 import { ControlsContainer } from "../shared/controls-container";
+import { ControlsBtnGroup } from "../shared/controls-btn-group";
 
 type Props = {
   settings: React.MutableRefObject<GenArtSettings>;
@@ -47,28 +48,21 @@ export default function Controls({ settings, onRegenerate }: Props) {
         onChange={(v) => update("size", v)}
       />
 
-      <div className="mt-4 space-y-2">
-        {(["flow", "spiral", "orbit", "explosion"] as const).map((p) => (
-          <button
-            key={p}
-            onClick={() => update("pattern", p)}
-            className={`w-full py-2 rounded text-xs border ${
-              settings.current.pattern === p
-                ? "bg-emerald-400/20 border-emerald-400 text-emerald-300"
-                : "border-emerald-400/30 text-emerald-500"
-            }`}
-          >
-            {p}
-          </button>
-        ))}
-      </div>
+      <ControlsBtnGroup
+        label="Pattern"
+        buttons={(["flow", "spiral", "orbit", "explosion"] as const).map((p) => ({
+          label: p,
+          onClick: () => update("pattern", p),
+          isActive: settings.current.pattern === p,
+        }))}
+      />
 
-      <button
+      {/* <button
         onClick={onRegenerate}
         className="mt-4 w-full py-2 rounded text-xs border border-emerald-400/30 hover:bg-white/10"
       >
         Regenerate
-      </button>
+      </button> */}
     </ControlsContainer>
   );
 }

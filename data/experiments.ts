@@ -182,6 +182,16 @@ export const audioVisualizerInstructions = [
   { icon: "📊", text: "Switch visualization modes", color: "#00ffff" },
 ];
 
+export const generativeArtInstructions = [
+  { icon: "🎨", text: "Select patterns to change particle behavior", color: "#00FFFF" },
+  { icon: "🌊", text: "Flow: Organic movement via Perlin noise", color: "#00F5D4" },
+  { icon: "🌀", text: "Spiral: Particles converge to center", color: "#9D4EDD" },
+  { icon: "🎯", text: "Orbit: Circular motion around origin", color: "#F72585" },
+  { icon: "💥", text: "Explosion: Particles burst outward", color: "#FF006E" },
+  { icon: "⚡", text: "Adjust speed, size & count live", color: "#06D6A0" },
+  { icon: "🖱️", text: "Click canvas to regenerate", color: "#FFB703" },
+];
+
 export const waveformOptions: WaveFormOption[] = [
   { id: "sine", name: "Sine" },
   { id: "square", name: "Square" },

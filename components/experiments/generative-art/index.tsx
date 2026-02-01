@@ -6,8 +6,14 @@ import { useP5 } from "@/hooks/useP5";
 import Controls from "./controls";
 import { GenArtSettings } from "@/types/experiments";
 import { CanvasContainer } from "../shared/canvas-container";
+import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
+import { InstructionsPanel } from "../shared/instructions-panel";
+import { StatsPanel } from "../shared/stats-panel";
+import { useCanvasControls } from "@/hooks/useCanvasControls";
+import { generativeArtInstructions } from "@/data/experiments";
 
 export default function GenerativeArt() {
+  const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
   const settings = useRef<GenArtSettings>({
     particleCount: 100,
     speed: 1,
@@ -95,8 +101,27 @@ export default function GenerativeArt() {
   const { containerRef } = useP5({ sketch });
 
   return (
-    <CanvasContainer>
+    <CanvasContainer isFullscreen={canvasExpanded}>
       <div ref={containerRef} className="w-full h-full" />
+
+      <ToggleControlsBtn
+        onToggleClick={toggleControls}
+        isVisible={showControls}
+        onExpandClick={toggleCanvasExpand}
+        isExpanded={canvasExpanded}
+        hasExpand
+      />
+
+      <InstructionsPanel
+        title="Generative Art Experiment"
+        icon={<span className="text-cyan-400">🎨</span>}
+        instructions={generativeArtInstructions}
+        showControls={showControls}
+      />
+
+      {/* <StatsPanel stats={stats} showControls={showControls} /> */}
+
+      
       <Controls settings={settings} onRegenerate={() => regenerate.current()} />
     </CanvasContainer>
   );

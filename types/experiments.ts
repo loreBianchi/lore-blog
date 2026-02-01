@@ -25,11 +25,13 @@ export interface StatItem {
 }
 
 // Settings for Generative Art experiment
+export type PatternType = "flow" | "spiral" | "orbit" | "explosion";
+
 export type GenArtSettings = {
   particleCount: number;
   speed: number;
   size: number;
-  pattern: "flow" | "spiral" | "orbit" | "explosion";
+  pattern: PatternType;
 };
 
 // Settings for Audio Visualizer experiment
