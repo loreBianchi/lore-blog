@@ -36,18 +36,25 @@ export default function GenerativeArt() {
         switch (settings.current.pattern) {
           case "flow":
             const angle =
-              p.noise(
-                this.pos.x * 0.01,
-                this.pos.y * 0.01,
-                p.frameCount * 0.01
-              ) *
-              p.TWO_PI *
-              2;
-            this.acc.add(
-              p5.Vector.fromAngle(angle).mult(
-                0.1 * settings.current.speed
-              )
-            );
+              p.noise(this.pos.x * 0.01, this.pos.y * 0.01, p.frameCount * 0.01) * p.TWO_PI * 2;
+            this.acc.add(p5.Vector.fromAngle(angle).mult(0.1 * settings.current.speed));
+            break;
+          case "spiral":
+            const center = p.createVector(p.width / 2, p.height / 2);
+            const dir = p5.Vector.sub(this.pos, center);
+            const angleSpiral = dir.heading() + 0.1;
+            this.acc.add(p5.Vector.fromAngle(angleSpiral).setMag(0.1 * settings.current.speed));
+            break;
+          case "orbit":
+            const centerOrbit = p.createVector(p.width / 2, p.height / 2);
+            const dirOrbit = p5.Vector.sub(this.pos, centerOrbit);
+            const angleOrbit = dirOrbit.heading() + p.HALF_PI;
+            this.acc.add(p5.Vector.fromAngle(angleOrbit).setMag(0.1 * settings.current.speed));
+            break;
+          case "explosion":
+            const centerExplosion = p.createVector(p.width / 2, p.height / 2);
+            const dirExplosion = p5.Vector.sub(this.pos, centerExplosion);
+            this.acc.add(dirExplosion.setMag(0.1 * settings.current.speed));
             break;
         }
 
@@ -72,10 +79,7 @@ export default function GenerativeArt() {
     }
 
     const init = () => {
-      particles = Array.from(
-        { length: settings.current.particleCount },
-        () => new Particle()
-      );
+      particles = Array.from({ length: settings.current.particleCount }, () => new Particle());
     };
 
     p.setup = () => {
@@ -121,7 +125,6 @@ export default function GenerativeArt() {
 
       {/* <StatsPanel stats={stats} showControls={showControls} /> */}
 
-      
       <Controls settings={settings} onRegenerate={() => regenerate.current()} />
     </CanvasContainer>
   );
