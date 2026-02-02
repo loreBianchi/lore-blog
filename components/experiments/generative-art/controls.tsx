@@ -1,68 +1,63 @@
 "use client";
 
 import { GenArtSettings } from "@/types/experiments";
-import { useState } from "react";
 import { RangeSlider } from "../shared/range-slider";
 import { ControlsContainer } from "../shared/controls-container";
 import { ControlsBtnGroup } from "../shared/controls-btn-group";
 
 type Props = {
-  settings: React.MutableRefObject<GenArtSettings>;
+  settings: GenArtSettings;
   onRegenerate: () => void;
+  onSettingsChange: (updates: Partial<GenArtSettings>) => void;
+  showControls: boolean;
 };
 
-export default function Controls({ settings, onRegenerate }: Props) {
-  const [, forceRender] = useState(0);
-
-  const update = <K extends keyof GenArtSettings>(key: K, value: GenArtSettings[K]) => {
-    settings.current[key] = value;
-    forceRender((v) => v + 1); // solo per UI
-  };
+export default function Controls({
+  settings,
+  onRegenerate,
+  onSettingsChange,
+  showControls,
+}: Props) {
+  // Rimuovi forceRender, usa direttamente onSettingsChange
 
   return (
-    <ControlsContainer position="bottom-right">
+    <ControlsContainer showControls={showControls} position="bottom-right">
       <RangeSlider
         label="Particles"
-        value={settings.current.particleCount}
+        value={settings.particleCount}
         min={50}
         max={300}
         step={10}
-        onChange={(v) => update("particleCount", v)}
+        onChange={(v) => onSettingsChange({ particleCount: v })}
       />
 
       <RangeSlider
         label="Speed"
-        value={settings.current.speed}
+        value={settings.speed}
         min={0.1}
         max={3}
         step={0.1}
-        onChange={(v) => update("speed", v)}
+        onChange={(v) => onSettingsChange({ speed: v })}
       />
 
       <RangeSlider
         label="Size"
-        value={settings.current.size}
+        value={settings.size}
         min={1}
         max={10}
         step={1}
-        onChange={(v) => update("size", v)}
+        onChange={(v) => onSettingsChange({ size: v })}
       />
 
       <ControlsBtnGroup
         label="Pattern"
+        size="sm"
         buttons={(["flow", "spiral", "orbit", "explosion"] as const).map((p) => ({
           label: p,
-          onClick: () => update("pattern", p),
-          isActive: settings.current.pattern === p,
+          onClick: () => onSettingsChange({ pattern: p }),
+          isActive: settings.pattern === p,
         }))}
       />
-
-      {/* <button
-        onClick={onRegenerate}
-        className="mt-4 w-full py-2 rounded text-xs border border-emerald-400/30 hover:bg-white/10"
-      >
-        Regenerate
-      </button> */}
     </ControlsContainer>
   );
 }

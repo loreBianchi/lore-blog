@@ -33,7 +33,6 @@ export default function Controls({
 }: ControlsProps) {
   return (
     <ControlsContainer showControls={showControls} position="bottom-left">
-      {/* Play/Pause */}
       <PlayPauseButton isPlaying={isPlaying} onToggle={onTogglePlay} />
       {/* Grid Size Slider */}
       <RangeSlider
@@ -55,7 +54,7 @@ export default function Controls({
         onChange={onNeonIntensityChange}
         accentColor="pink"
       />
-      {/* Color Scheme */}
+      
       <ColorPicker
         colors={colorOptions}
         selected={colorScheme}

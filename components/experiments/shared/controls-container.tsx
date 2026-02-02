@@ -1,9 +1,12 @@
+import { positionClasses } from "@/data/ui";
+import { ControlsDisplay, ControlsPosition } from "@/types/ui";
+
 interface ControlsContainerProps {
   showControls?: boolean;
   children: React.ReactNode;
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  position?: ControlsPosition;
   className?: string;
-  display?: "vertical" | "horizontal";
+  display?: ControlsDisplay;
 }
 
 export function ControlsContainer({
@@ -13,12 +16,6 @@ export function ControlsContainer({
   className = "",
   display = "vertical",
 }: ControlsContainerProps) {
-  const positionClasses = {
-    "top-left": "left-4 top-4 -translate-y-0",
-    "top-right": "right-4 top-4 -translate-y-0",
-    "bottom-left": "left-4 bottom-4 translate-y-0",
-    "bottom-right": "right-4 bottom-4 translate-y-0",
-  };
 
   return (
     <div

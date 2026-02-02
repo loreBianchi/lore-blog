@@ -13,6 +13,7 @@ import { neonGridInstructions } from "@/data/experiments";
 import { colorsSets } from "@/data/colors";
 import { ColorKey } from "@/types/colors";
 import Controls from "./controls";
+import { StatItem } from "@/types/experiments";
 
 export function NeonGridExperiment() {
   const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
@@ -197,7 +198,7 @@ export function NeonGridExperiment() {
     ),
   });
 
-  const stats = [
+  const stats: StatItem[] = [
     {
       label: "CUBES",
       value: (gridSize * gridSize).toString(),

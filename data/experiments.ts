@@ -134,18 +134,6 @@ export const experiments: Experiment[] = [
   // },
 ];
 
-// Export helper functions
-export const getExperimentBySlug = (slug: string) => {
-  return experiments.find((exp) => exp.slug === slug);
-};
-
-export const getExperimentsByCategory = (category: string) => {
-  return experiments.filter((exp) => exp.category === category);
-};
-
-export const getExperimentsByTech = (tech: string) => {
-  return experiments.filter((exp) => exp.tech.includes(tech));
-};
 
 // Categories for filtering
 export const categories = [
@@ -189,7 +177,7 @@ export const generativeArtInstructions = [
   { icon: "🎯", text: "Orbit: Circular motion around origin", color: "#F72585" },
   { icon: "💥", text: "Explosion: Particles burst outward", color: "#FF006E" },
   { icon: "⚡", text: "Adjust speed, size & count live", color: "#06D6A0" },
-  { icon: "🖱️", text: "Click canvas to regenerate", color: "#FFB703" },
+  // { icon: "🖱️", text: "Click canvas to regenerate", color: "#FFB703" },
 ];
 
 export const waveformOptions: WaveFormOption[] = [
