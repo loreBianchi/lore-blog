@@ -35,7 +35,7 @@ export function InstructionsPanel({
       ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}
     >
       {/* HEADER */}
-      <div className={`${isOpen ? "min-w-[250px]" : "w-fit"}`}>
+      <div>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-4 py-3 text-white/70 hover:text-white 
