@@ -167,7 +167,6 @@ export function ParticleGalaxyExperiment() {
 
       <InstructionsPanel
         title="Particle Galaxy Experiment"
-        icon={<span className="text-cyan-400">🌌</span>}
         instructions={instructions}
         showControls={showControls}
       />

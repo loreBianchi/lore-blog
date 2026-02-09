@@ -226,7 +226,6 @@ export default function AudioVisualizerExperiment() {
         instructions={audioVisualizerInstructions}
         showControls={showControls}
         title="Audio Visualizer"
-        icon="🎧"
       />
 
       <StatsPanel stats={stats} showControls={showControls} />

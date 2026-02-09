@@ -124,7 +124,6 @@ export default function GenerativeArt() {
       />
       <InstructionsPanel
         title="Generative Art Experiment"
-        icon={<span className="text-cyan-400">🎨</span>}
         instructions={generativeArtInstructions}
         showControls={showControls}
       />

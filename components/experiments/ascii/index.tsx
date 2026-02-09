@@ -259,7 +259,6 @@ export default function ASCIIArtExperiment() {
 
       <InstructionsPanel
         title="ASCII 3D Experiment"
-        icon={<span className="text-cyan-400">💠</span>}
         instructions={instructions}
         showControls={showControls}
       />

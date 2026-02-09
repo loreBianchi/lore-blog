@@ -233,7 +233,6 @@ export function NeonGridExperiment() {
 
       <InstructionsPanel
         title="Neon Grid Experiment"
-        icon={<span className="text-cyan-400">💠</span>}
         instructions={neonGridInstructions}
         showControls={showControls}
       />
