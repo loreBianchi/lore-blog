@@ -18,7 +18,7 @@ import { ColorPicker } from "../shared/color-picker";
 import { ColorKey } from "@/types/colors";
 import { colorMap, colorOptions } from "@/data/colors";
 import { ControlsButton } from "../shared/controls-button";
-import { useCanvasControls } from "@/hooks/useCanvasControls";
+import { useCanvasControls } from "@/hooks/core/useCanvasControls";
 
 export default function ASCIIArtExperiment() {
   const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();

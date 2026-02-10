@@ -1,4 +1,4 @@
-import { ExperimentListItem } from '@/components/experiments/experiment-list-item';
+import { ExperimentListItem } from '@/components/experiments/list/experiment-list-item';
 import { experiments } from '@/data/experiments'
 import Link from 'next/link'
 

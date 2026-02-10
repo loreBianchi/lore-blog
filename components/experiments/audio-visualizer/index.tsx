@@ -9,7 +9,7 @@ import {
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
 import { InstructionsPanel } from "../shared/instructions-panel";
 import Controls from "./controls";
-import { useCanvasControls } from "@/hooks/useCanvasControls";
+import { useCanvasControls } from "@/hooks/core/useCanvasControls";
 
 export default function AudioVisualizerExperiment() {
   const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();

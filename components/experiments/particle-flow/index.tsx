@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import * as THREE from "three";
 import { useCanvas, useAnimation } from "@/hooks/core";
 import { useThreeCanvas, useOrbitControls, useParticles } from "@/hooks/threejs";
-import { useCanvasControls } from "@/hooks/useCanvasControls";
+import { useCanvasControls } from "@/hooks/core/useCanvasControls";
 import { CanvasContainer } from "../shared/canvas-container";
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
 import { InstructionsPanel } from "../shared/instructions-panel";

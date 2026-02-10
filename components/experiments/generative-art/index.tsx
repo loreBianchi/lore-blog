@@ -2,15 +2,14 @@
 
 import p5 from "p5";
 import { useRef, useCallback } from "react";
-import { useP5 } from "@/hooks/useP5";
+import { useP5, useSettingsWithStats } from "@/hooks/p5js";
 import Controls from "./controls";
 import { CanvasContainer } from "../shared/canvas-container";
 import { ToggleControlsBtn } from "../shared/toggle-controls-btn";
 import { InstructionsPanel } from "../shared/instructions-panel";
 import { StatsPanel } from "../shared/stats-panel";
-import { useCanvasControls } from "@/hooks/useCanvasControls";
+import { useCanvasControls } from "@/hooks/core/useCanvasControls";
 import { generativeArtInstructions } from "@/data/experiments";
-import { useSettingsWithStats } from "@/hooks/p5js/useSettingsWithStats";
 
 export default function GenerativeArt() {
   const { showControls, toggleControls, canvasExpanded, toggleCanvasExpand } = useCanvasControls();
