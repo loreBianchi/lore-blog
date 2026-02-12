@@ -59,48 +59,6 @@ const DEFAULT_CONFIG = {
   color: 0xffffff,
 };
 
-/**
- * Hook for creating and managing a particle system in Three.js
- * 
- * Creates a THREE.Points object with configurable particles.
- * Provides utilities for updating positions and colors.
- * 
- * @example
- * ```tsx
- * const particles = useParticles(three.scene, {
- *   count: 5000,
- *   size: 0.1,
- *   generator: (positions, colors) => {
- *     for (let i = 0; i < 5000; i++) {
- *       const i3 = i * 3;
- *       // Random positions in sphere
- *       const radius = Math.random() * 10;
- *       const theta = Math.random() * Math.PI * 2;
- *       const phi = Math.acos(2 * Math.random() - 1);
- *       
- *       positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
- *       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
- *       positions[i3 + 2] = radius * Math.cos(phi);
- *       
- *       if (colors) {
- *         colors[i3] = Math.random();
- *         colors[i3 + 1] = Math.random();
- *         colors[i3 + 2] = Math.random();
- *       }
- *     }
- *   },
- * });
- * 
- * // In animation loop:
- * useAnimation({
- *   onFrame: (time) => {
- *     if (particles.points) {
- *       particles.points.rotation.y = time * 0.1;
- *     }
- *   },
- * });
- * ```
- */
 export function useParticles(
   scene: THREE.Scene,
   config: ParticlesConfig
@@ -109,15 +67,21 @@ export function useParticles(
   const geometryRef = useRef<THREE.BufferGeometry | null>(null);
   const materialRef = useRef<THREE.PointsMaterial | null>(null);
   const configRef = useRef(config);
+  const generatorRef = useRef(config.generator);
 
   // Update config ref
   useEffect(() => {
     configRef.current = config;
   }, [config]);
 
+  // Update generator ref
+  useEffect(() => {
+    generatorRef.current = config.generator;
+  }, [config.generator]);
+
   // Create particles
   useEffect(() => {
-    if (!scene) return; // Guard against null scene
+    if (!scene) return;
     
     const mergedConfig = { ...DEFAULT_CONFIG, ...config };
 
@@ -126,16 +90,14 @@ export function useParticles(
     const positions = new Float32Array(config.count * 3);
     const colors = mergedConfig.vertexColors ? new Float32Array(config.count * 3) : undefined;
 
-    // Generate particles using provided function
-    config.generator(positions, colors, config.count);
+    // Usa generatorRef invece di config.generator
+    generatorRef.current(positions, colors, config.count);
 
     // Set attributes
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     if (colors) {
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     }
-
-    geometryRef.current = geometry;
 
     // Create material
     const material = new THREE.PointsMaterial({
@@ -148,27 +110,57 @@ export function useParticles(
       color: mergedConfig.vertexColors ? undefined : new THREE.Color(mergedConfig.color),
     });
 
-    materialRef.current = material;
-
     // Create points
     const points = new THREE.Points(geometry, material);
-    pointsRef.current = points;
-
-    // Add to scene
+    
+    // Rimuovi il vecchio se esiste
+    if (pointsRef.current) {
+      scene.remove(pointsRef.current);
+    }
+    
+    // Aggiungi il nuovo
     scene.add(points);
+    
+    // Salva le ref
+    pointsRef.current = points;
+    geometryRef.current = geometry;
+    materialRef.current = material;
 
-    // Cleanup
+    // Cleanup - rimuovi solo dalla scena, NON settare a null
     return () => {
       scene.remove(points);
       geometry.dispose();
       material.dispose();
+      // NON fare: pointsRef.current = null
     };
-  }, [scene, config.count, config.generator]);
+  }, [scene, config.count]);
+
+  // Effect separato per aggiornare le particelle quando generator cambia
+  useEffect(() => {
+    if (!geometryRef.current || !pointsRef.current) return;
+
+    const mergedConfig = { ...DEFAULT_CONFIG, ...config };
+    const positions = new Float32Array(config.count * 3);
+    const colors = mergedConfig.vertexColors ? new Float32Array(config.count * 3) : undefined;
+
+    // Rigenera con il nuovo generator
+    config.generator(positions, colors, config.count);
+
+    // Aggiorna gli attributi
+    geometryRef.current.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    if (colors) {
+      geometryRef.current.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    }
+    geometryRef.current.attributes.position.needsUpdate = true;
+    if (geometryRef.current.attributes.color) {
+      geometryRef.current.attributes.color.needsUpdate = true;
+    }
+  }, [config.generator, config.count]);
 
   const regenerate = (generator?: ParticleGenerator) => {
     if (!geometryRef.current) return;
 
-    const gen = generator || configRef.current.generator;
+    const gen = generator || generatorRef.current;
     const positions = new Float32Array(configRef.current.count * 3);
     const colors = configRef.current.vertexColors !== false 
       ? new Float32Array(configRef.current.count * 3)

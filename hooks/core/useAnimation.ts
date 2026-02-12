@@ -1,60 +1,31 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-/**
- * Frame callback function type
- * @param time - Elapsed time in seconds since animation start
- * @param delta - Delta time in seconds since last frame
- */
 export type FrameCallback = (time: number, delta: number) => void;
 
-/**
- * Configuration for animation loop
- */
 export interface AnimationConfig {
-  /** Whether the animation is playing */
   isPlaying: boolean;
-  /** Callback function called on each frame */
   onFrame: FrameCallback;
-  /** Target FPS (optional, defaults to requestAnimationFrame) */
   fps?: number;
 }
 
-/**
- * Return type for useAnimation hook
- */
 export interface AnimationControls {
-  /** Start the animation */
   start: () => void;
-  /** Stop the animation */
   stop: () => void;
-  /** Toggle play/pause */
   toggle: () => void;
-  /** Get current elapsed time */
   getTime: () => number;
 }
 
-/**
- * Core hook for animation loop
- * 
- * Provides a flexible animation loop that works with any rendering technology.
- * Handles play/pause, timing, and cleanup automatically.
- * 
- * @example
- * ```tsx
- * const controls = useAnimation({
- *   isPlaying: true,
- *   onFrame: (time, delta) => {
- *     // Update your scene
- *     updateObjects(time, delta);
- *   },
- * });
- * ```
- */
 export function useAnimation(config: AnimationConfig): AnimationControls {
   const animationIdRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
   const isPlayingRef = useRef(config.isPlaying);
+  const onFrameRef = useRef(config.onFrame);
+
+  // Update onFrame ref when callback changes
+  useEffect(() => {
+    onFrameRef.current = config.onFrame;
+  }, [config.onFrame]);
 
   // Update playing state ref when prop changes
   useEffect(() => {
@@ -86,37 +57,45 @@ export function useAnimation(config: AnimationConfig): AnimationControls {
   }, []);
 
   useEffect(() => {
-    // Initialize start time
+    // Initialize start time only once
     if (startTimeRef.current === 0) {
       startTimeRef.current = performance.now();
       lastFrameTimeRef.current = startTimeRef.current;
     }
 
-    if (!config.isPlaying) {
-      if (animationIdRef.current !== null) {
-        cancelAnimationFrame(animationIdRef.current);
-        animationIdRef.current = null;
-      }
-      return;
-    }
-
     const animate = (currentTime: number) => {
-      if (!isPlayingRef.current) return;
+      // Check if should continue
+      if (!isPlayingRef.current) {
+        animationIdRef.current = null;
+        return;
+      }
 
-      // Calculate time and delta
       const elapsedTime = (currentTime - startTimeRef.current) / 1000;
       const delta = (currentTime - lastFrameTimeRef.current) / 1000;
       lastFrameTimeRef.current = currentTime;
 
-      // Call user's frame callback
-      config.onFrame(elapsedTime, delta);
+      // Call the latest version of onFrame
+      onFrameRef.current(elapsedTime, delta);
 
       // Schedule next frame
       animationIdRef.current = requestAnimationFrame(animate);
     };
 
-    // Start animation loop
-    animationIdRef.current = requestAnimationFrame(animate);
+    // Start only if isPlaying is true
+    if (config.isPlaying) {
+      // Stop any previous loops
+      if (animationIdRef.current !== null) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+      // Start new loop
+      animationIdRef.current = requestAnimationFrame(animate);
+    } else {
+      // Stop the loop if isPlaying is false
+      if (animationIdRef.current !== null) {
+        cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
+    }
 
     return () => {
       if (animationIdRef.current !== null) {
@@ -124,7 +103,7 @@ export function useAnimation(config: AnimationConfig): AnimationControls {
         animationIdRef.current = null;
       }
     };
-  }, [config.isPlaying, config.onFrame]);
+  }, [config.isPlaying]); // Reacts ONLY to isPlaying
 
   return {
     start,

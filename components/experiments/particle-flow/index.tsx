@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import * as THREE from "three";
 import { useCanvas, useAnimation } from "@/hooks/core";
 import { useThreeCanvas, useOrbitControls, useParticles } from "@/hooks/threejs";
@@ -146,7 +146,7 @@ export function ParticleGalaxyExperiment() {
   const stats = [
     {
       label: "PARTICLES",
-      value: particleCount.toLocaleString(),
+      value: particleCount.toString(),
       color: "#4CC9F0",
     },
     { label: "SPEED", value: `${speed.toFixed(1)}x`, color: "#9D4EDD" },
