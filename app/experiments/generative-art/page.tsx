@@ -1,7 +1,7 @@
 import { ExperimentNotFound } from '@/components/experiments/shared/experiment-not-found';
 import { ExperimentPageLayout } from '@/components/experiments/shared/experiment-page-layout';
 import { experiments } from "@/data/experiments";
-import P5Canvas from './p5-canvas';
+import GenerativeArtContent from './generative-art-content';
 
 export default function GenerativeArtPage() {
   const experiment = experiments.find((exp) => exp.slug === "generative-art");
@@ -16,7 +16,7 @@ export default function GenerativeArtPage() {
       description={experiment.description}
       tags={experiment.tech}
     >
-      <P5Canvas />
+      <GenerativeArtContent />
     </ExperimentPageLayout>
   );
 }
