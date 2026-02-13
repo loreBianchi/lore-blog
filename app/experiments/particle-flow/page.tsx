@@ -1,7 +1,7 @@
-import { ParticleGalaxyExperiment } from "@/components/experiments/particle-flow";
 import { experiments } from "@/data/experiments";
 import { ExperimentNotFound } from "@/components/experiments/shared/experiment-not-found";
 import { ExperimentPageLayout } from "@/components/experiments/shared/experiment-page-layout";
+import ParticleFlowSuspense from "./particle-flow-suspense";
 
 const ParticleGalaxyPage = () => {
   const experiment = experiments.find((exp) => exp.slug === "particle-flow");
@@ -16,7 +16,7 @@ const ParticleGalaxyPage = () => {
       description={experiment.description}
       tags={experiment.tech}
     >
-      <ParticleGalaxyExperiment />
+      <ParticleFlowSuspense />
     </ExperimentPageLayout>
   );
 };
